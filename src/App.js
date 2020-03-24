@@ -1,15 +1,18 @@
-import React from "react";
-import axios from "./request/axiosConfig";
-import api from "./request/api/api_user";
-import Login from "./login/component";
-import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
+import React from 'react';
+import axios from './request/axiosConfig';
+import api from './request/api/api_user';
+import Login from './login/component';
+import IndexPage from './indexPage';
+import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
+import './global.css';
+import 'antd/dist/antd.css';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: "",
-      password: ""
+      username: '',
+      password: ''
     };
   }
 
@@ -19,9 +22,9 @@ class App extends React.Component {
   queryUserInfo = async () => {
     const res = await axios({
       url: api.getUserInfo,
-      method: "get"
+      method: 'get'
     });
-    console.log("res", res);
+    console.log('res', res);
   };
 
   /**
@@ -35,21 +38,10 @@ class App extends React.Component {
     };
     const res = await axios({
       url: api.addUser,
-      method: "post",
+      method: 'post',
       data
     });
     console.log(res);
-  };
-
-  /**
-   * 处理用户名密码输入
-   */
-  handleInput = event => {
-    event.persist();
-    const { name, value } = event.target;
-    this.setState({
-      [name]: value
-    });
   };
 
   render() {
@@ -57,10 +49,12 @@ class App extends React.Component {
       <>
         <HashRouter>
           <Switch>
-            <Route exact path="/" component={Login} />
+            <Route exact path='/' component={Login} />
             {/* 登录 */}
-            <Route exact path="/login" component={Login} />
-            <Redirect to="/login" />
+            <Route exact path='/login' component={Login} />
+            {/* 首页 */}
+            <Route exact path='/index' component={IndexPage} />
+            <Redirect to='/login' />
           </Switch>
         </HashRouter>
       </>

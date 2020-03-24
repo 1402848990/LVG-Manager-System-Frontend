@@ -1,15 +1,15 @@
 /**
  * @description 生成验证码组件
  */
-import React from "react";
-import styles from "./index.scss";
+import React from 'react';
+import styles from './index.scss';
 
 class Verification extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      num1: "",
-      num2: ""
+      num1: '',
+      num2: ''
     };
   }
 

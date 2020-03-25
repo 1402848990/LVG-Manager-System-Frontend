@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button } from 'antd';
 import { LockOutlined, UserOutlined, PhoneOutlined } from '@ant-design/icons';
-import axios from '../../request/axiosConfig';
-import api from '../../request/api/api_user';
-import api_sms from '../../request/api/api_sms';
+import axios from '../../../request/axiosConfig';
+import api from '../../../request/api/api_user';
+import api_sms from '../../../request/api/api_sms';
 import styles from '../conpenent.scss';
 import SmsSendBtn from './smsSendBtn';
 

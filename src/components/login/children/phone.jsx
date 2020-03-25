@@ -4,9 +4,9 @@ import styles from '../conpenent.scss';
 import { Input, Button } from 'antd';
 import { LockOutlined, UserOutlined, PhoneOutlined } from '@ant-design/icons';
 import SmsSendBtn from './smsSendBtn';
-import axios from '../../request/axiosConfig';
-import api from '../../request/api/api_user';
-import api_sms from '../../request/api/api_sms';
+import axios from '../../../request/axiosConfig';
+import api from '../../../request/api/api_user';
+import api_sms from '../../../request/api/api_sms';
 import { withRouter } from 'react-router-dom';
 
 class Phone extends React.Component {

@@ -1,7 +1,8 @@
 import React from 'react';
-import axios from '../request/axiosConfig';
-import api from '../request/api/api_user';
+import axios from '../../request/axiosConfig';
+import api from '../../request/api/api_user';
 import styles from './index.scss';
+import { Link } from 'react-router-dom';
 
 class IndexPage extends React.Component {
   constructor(props) {
@@ -18,7 +19,12 @@ class IndexPage extends React.Component {
   }
 
   render() {
-    return <>indexPage</>;
+    return (
+      <>
+        indexPage
+        <Link to='/login'>去登录</Link>
+      </>
+    );
   }
 }
 

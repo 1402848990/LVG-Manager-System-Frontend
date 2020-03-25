@@ -3,8 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Button } from 'antd';
 import { useCountDown } from '@minax/countdown';
-import axios from '../../request/axiosConfig';
-import api from '../../request/api/api_sms';
+import axios from '../../../request/axiosConfig';
+import api from '../../../request/api/api_sms';
 
 const Btn1 = props => {
   const { phone } = props;

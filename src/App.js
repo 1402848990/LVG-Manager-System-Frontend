@@ -1,9 +1,9 @@
 import React from 'react';
 import axios from './request/axiosConfig';
 import api from './request/api/api_user';
-import Login from './login/component';
-import IndexPage from './indexPage';
-import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
+import Login from './components/login/component';
+import IndexPage from './components/indexPage';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import './global.css';
 import 'antd/dist/antd.css';
 
@@ -47,7 +47,7 @@ class App extends React.Component {
   render() {
     return (
       <>
-        <HashRouter>
+        <BrowserRouter>
           <Switch>
             <Route exact path='/' component={Login} />
             {/* 登录 */}
@@ -56,7 +56,7 @@ class App extends React.Component {
             <Route exact path='/index' component={IndexPage} />
             <Redirect to='/login' />
           </Switch>
-        </HashRouter>
+        </BrowserRouter>
       </>
     );
   }

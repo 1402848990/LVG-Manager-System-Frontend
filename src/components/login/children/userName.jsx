@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import styles from '../conpenent.scss';
-import axios from '../../request/axiosConfig';
-import api from '../../request/api/api_user';
+import axios from '../../../request/axiosConfig';
+import api from '../../../request/api/api_user';
 import { Button, Alert } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import Verification from '../../verification';

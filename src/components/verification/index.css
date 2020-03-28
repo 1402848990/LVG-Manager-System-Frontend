@@ -1,0 +1,9 @@
+.wrap {
+  cursor: pointer;
+  display: inline-block;
+  width: 36%;
+  height: 34px;
+  padding-right: 8px;
+  font-size: 20px;
+  font-weight: 300;
+  text-align: right; }

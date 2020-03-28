@@ -1,0 +1,11 @@
+.list-news .ant-list-item {
+  display: flex;
+  justify-content: space-between; }
+  .list-news .ant-list-item .list-title {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis; }
+  .list-news .ant-list-item .list-time {
+    width: 20%;
+    text-align: center; }

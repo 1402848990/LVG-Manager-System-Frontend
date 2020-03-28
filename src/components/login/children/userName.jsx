@@ -7,6 +7,8 @@ import { Button, Alert } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import Verification from '../../verification';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { setUserInfo } from '@/redux/actions/userInfo';
 
 class UserName extends React.Component {
   constructor(props) {
@@ -66,6 +68,28 @@ class UserName extends React.Component {
       return;
     } else {
       await this.props.handleAlert(true, data.message, 'success');
+
+      localStorage.setItem('isLogin', '1');
+      // 模拟生成一些数据
+      this.props.setUserInfo(
+        Object.assign(
+          {},
+          { userName: 'index', password: 'index' },
+          { role: { type: 1, name: '超级管理员' } }
+        )
+      );
+      localStorage.setItem(
+        'userInfo',
+        JSON.stringify(
+          Object.assign(
+            {},
+            { userName: 'index', password: 'index' },
+            { role: { type: 1, name: '超级管理员' } }
+          )
+        )
+      );
+      this.props.history.push('/index');
+
       // 登录成功跳转首页
       setTimeout(() => {
         this.props.history.push('/index');
@@ -132,4 +156,14 @@ class UserName extends React.Component {
   }
 }
 
-export default withRouter(UserName);
+// export default withRouter(UserName);
+const mapStateToProps = state => state;
+const mapDispatchToProps = dispatch => ({
+  setUserInfo: data => {
+    dispatch(setUserInfo(data));
+  }
+});
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(UserName));

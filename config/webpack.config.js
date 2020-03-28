@@ -287,6 +287,7 @@ module.exports = function(webpackEnv) {
         .map(ext => `.${ext}`)
         .filter(ext => useTypeScript || !ext.includes('ts')),
       alias: {
+        '@': path.resolve('src'),
         // Support React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
         'react-native': 'react-native-web',
@@ -488,6 +489,10 @@ module.exports = function(webpackEnv) {
             // In production, they would get copied to the `build` folder.
             // This loader doesn't use a "test" so it will catch all modules
             // that fall through the other loaders.
+            {
+              test: /\.scss$/,
+              loaders: ['style-loader', 'css-loader', 'sass-loader']
+            },
             {
               loader: require.resolve('file-loader'),
               // Exclude `js` files to keep "css" loader working as it injects

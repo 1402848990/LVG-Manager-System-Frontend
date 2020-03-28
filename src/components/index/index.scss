@@ -1,0 +1,104 @@
+// 用户登录卡片
+.infoWarp {
+  float: left;
+  border: 1px solid #e8e8e8;
+  width: 60%;
+  height: 230px;
+  padding: 10px;
+  position: relative;
+  .top {
+    height: 92%;
+    .left {
+      float: left;
+    }
+    h2 {
+      font-size: 36px;
+      color: #0d67b7;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    h3 {
+      font-family: Microsoft YaHei, PingFang SC, Helvetica Neue, Helvetica,
+        WenQuanYi Micro Hei, Arial, sans-serif !important;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      font-size: 20px;
+      color: #999;
+    }
+  }
+  .bottom {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    bottom: 10px;
+    color: #777676;
+  }
+}
+.format {
+  line-height: 15px;
+  font-size: 32px;
+  font {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.65);
+  }
+  span {
+    font-size: 12px;
+    color: #999;
+    font-weight: 350;
+  }
+}
+
+.hostIndex {
+  float: right;
+  // background: #019bd3;
+  width: 39%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 230px;
+}
+
+// 主机列表
+.hostList {
+  color: #666;
+  margin-top: 20px;
+  .row {
+    &:hover {
+      box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+    }
+    cursor: pointer;
+    border-radius: 8px;
+    background-color: white;
+    // border: red 1px solid;
+    padding: 10px 0;
+    .data {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      border-left: 1px #f0f0f0 solid;
+      .progress {
+        width: 66%;
+      }
+    }
+    .right {
+      border-left: 1px #f0f0f0 solid;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      & > :nth-child(2) {
+        color: #20a53a;
+      }
+    }
+    .left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}

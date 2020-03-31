@@ -6,7 +6,9 @@ import {
   MenuUnfoldOutlined,
   SettingOutlined,
   CaretDownOutlined,
-  BellOutlined
+  BellOutlined,
+  WindowsOutlined,
+  IdcardOutlined
 } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -22,6 +24,7 @@ import { routes } from '@/router/routes';
 import FullScreen from '@/components/FullScreen';
 import Tags from './Tags';
 import BasicDrawer from '@/components/BasicDrawer';
+import styles from './index.scss';
 
 class TopHeader extends Component {
   state = { visible: false };
@@ -87,6 +90,15 @@ class TopHeader extends Component {
   render() {
     const DropdownList = (
       <Menu className='drop-list'>
+        <Menu.Item
+          key='userInfo'
+          onClick={() => {
+            this.props.history.push('./userInfo');
+          }}
+        >
+          <IdcardOutlined />
+          个人资料
+        </Menu.Item>
         <Menu.Item key='user'>
           <UserOutlined />
           {Object.keys(this.props.userInfo).length > 0 &&
@@ -104,7 +116,16 @@ class TopHeader extends Component {
         <div className='top-header-inner'>
           <MenuUnfoldOutlined className='trigger' onClick={this.toggle} />
 
-          <div className='header-title'>React-antd-admin 通用后台管理系统</div>
+          <div className={`${styles.top} header-title`}>
+            {/* React-antd-admin 通用后台管理系统 */}
+            <span>IP:127.0.0.1</span>
+            <span>节点:浙江杭州</span>
+            <span>
+              <WindowsOutlined />
+              系统: Windows Server 2008 R2 Datacenter (build 7601) x64
+            </span>
+            <span>已不间断运行:6天23小时7分钟</span>
+          </div>
           <div className='header-right'>
             <div className='full-screen'>
               <FullScreen />

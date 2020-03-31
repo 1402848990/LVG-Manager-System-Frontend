@@ -1,4 +1,7 @@
 import React from 'react';
+import Status from './children/status';
+import HostDesc from './children/hostDesc';
+import Plot from './children/plot';
 import styles from './index.scss';
 
 class IndexPage extends React.Component {
@@ -8,7 +11,15 @@ class IndexPage extends React.Component {
   }
 
   render() {
-    return <>indexPage</>;
+    return (
+      // <div className='shadow-radius'>
+      <div className={styles.hostDetail}>
+        <Status />
+        <HostDesc />
+        <Plot />
+      </div>
+      // </div>
+    );
   }
 }
 

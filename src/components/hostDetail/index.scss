@@ -1,0 +1,88 @@
+.hostDetail {
+  overflow: auto;
+  .hostDesc {
+    float: left;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+    margin-top: 12px;
+    width: 39.3%;
+    background: white;
+    padding: 20px;
+    img {
+      display: block;
+      width: 50px;
+      margin: 0 auto;
+    }
+    .name {
+      font-size: 18px;
+      color: #333;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .groupButton {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .options {
+      p {
+        margin-bottom: 5px;
+      }
+      span {
+        font-family: Microsoft YaHei, PingFang SC, Helvetica Neue, Helvetica,
+          WenQuanYi Micro Hei, Arial, sans-serif !important;
+        font-size: 12px;
+        margin-right: 10px;
+      }
+    }
+  }
+  .status {
+    padding: 15px;
+    background-color: white;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+    .pargrams {
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      .progress {
+        border: 1px red #eee;
+        & > h3 {
+          padding-top: 10px;
+          color: #999;
+          font-size: 15px;
+          text-align: center;
+          display: block;
+        }
+      }
+    }
+    p {
+      font-size: 16px;
+      color: #666;
+      font-family: inherit;
+      font-weight: 500;
+    }
+  }
+  .plot {
+    overflow: hidden;
+    .warnLog {
+      width: 100%;
+      background: white;
+      overflow: hidden;
+      margin-left: 12px;
+      margin-top: 12px;
+    }
+    .netSpeed {
+      // width: 30%;
+      float: left;
+      background: white;
+      margin-top: 12px;
+      margin-left: 12px;
+      overflow: hidden;
+    }
+    .healthys {
+      float: left;
+      margin-top: 12px;
+      margin-left: 12px;
+      background: white;
+    }
+  }
+}

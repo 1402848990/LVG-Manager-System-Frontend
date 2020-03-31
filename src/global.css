@@ -87,3 +87,12 @@ button {
 .ant-menu-item > a:only-child {
   display: inline-block !important;
 }
+
+.ant-btn-group > .ant-btn:first-child:not(:last-child) {
+  border-top-left-radius: 8px !important;
+  border-bottom-left-radius: 8px !important;
+}
+.ant-btn-group > .ant-btn:last-child:not(:first-child) {
+  border-top-right-radius: 8px !important;
+  border-bottom-right-radius: 8px !important;
+}

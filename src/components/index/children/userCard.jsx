@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from '../index.scss';
 import { UserOutlined } from '@ant-design/icons';
+import ICON from '@/assets/icon';
 import { Progress } from 'antd';
 
 class UserCard extends React.Component {
@@ -76,11 +77,11 @@ class UserCard extends React.Component {
             &nbsp; 上次登录：2020-03-25 20:30:10
           </span>
           <span style={styles.time}>
-            <UserOutlined />
+            <ICON type='iconip' />
             &nbsp; 上次登录IP：127.0.0.1
           </span>
           <span style={styles.time}>
-            <UserOutlined />
+            <ICON type='iconaddress' />
             &nbsp; 上次登录位置：浙江杭州
           </span>
         </div>

@@ -1,4 +1,8 @@
 import Index from '../components/index/Index';
+import HostDetail from '../components/hostDetail';
+import NowMonitor from '../components/nowMonitor';
+import HostList from '../components/hostList';
+import UserInfo from '../components/userInfo';
 // import Icon from '../views/icon/Index';
 // import Error404 from '../views/error/Error404';
 // import Error500 from '../views/error/Error500';
@@ -24,8 +28,11 @@ import Index from '../components/index/Index';
 // import About from '../views/about/About';
 
 export const routes = [
-  { path: '/index', component: Index }
-  // { path: '/icon', component: Icon }
+  { path: '/index', component: Index },
+  { path: '/hostDetail', component: HostDetail },
+  { path: '/nowMonitor', component: NowMonitor },
+  { path: '/hostList', component: HostList },
+  { path: '/userInfo', component: UserInfo }
   // { path: '/form/basic', component: BasicForm },
   // { path: '/form/editor', component: Editor },
   // { path: '/form/markdown', component: MarkDown },

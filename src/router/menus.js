@@ -14,8 +14,18 @@ export const menus = [
     icon: <HomeOutlined />
   },
   {
-    path: '/icon',
-    title: '图标'
+    path: '/hostList',
+    title: '主机列表'
+    // icon: 'file'
+  },
+  {
+    path: '/hostDetail',
+    title: 'HostDetail'
+    // icon: 'file'
+  },
+  {
+    path: '/nowMonitor',
+    title: '实时监控'
     // icon: 'file'
   },
   {

@@ -6,7 +6,39 @@ import { connect } from 'react-redux';
 import { Layout } from 'antd';
 const { Content } = Layout;
 
-const MainContent = ({ location }) => {
+// console.log('st')
+
+// class MainContent extends React.Component{
+
+//   render() {
+//     return (
+//       <TransitionGroup>
+//         <CSSTransition classNames='fade' key={location.pathname} timeout={400}>
+//           <Content style={{ padding: '4px 15px' }}>
+//             <Switch>
+//               {routes.map(
+//                 ele =>
+//                   handleFilter(ele.permission) && (
+//                     <Route
+//                       render={() => <ele.component />}
+//                       key={ele.path}
+//                       path={ele.path}
+//                     />
+//                   )
+//               )}
+//               <Redirect from='/' exact to='/index' />
+//               <Redirect to='/404' />
+//             </Switch>
+//           </Content>
+//         </CSSTransition>
+//       </TransitionGroup>
+//     );
+//   }
+// }
+
+const MainContent = ({ location }, props) => {
+  console.log('props', props);
+
   const roleType =
     localStorage.getItem('userInfo') &&
     JSON.parse(localStorage.getItem('userInfo')).role.type;
@@ -19,7 +51,7 @@ const MainContent = ({ location }) => {
 
   return (
     <TransitionGroup>
-      <CSSTransition classNames='fade' key={location.pathname} timeout={500}>
+      <CSSTransition classNames='fade' key={location.pathname} timeout={400}>
         <Content style={{ padding: '4px 15px' }}>
           <Switch>
             {routes.map(
@@ -33,7 +65,7 @@ const MainContent = ({ location }) => {
                 )
             )}
             <Redirect from='/' exact to='/index' />
-            <Redirect to='/error/404' />
+            <Redirect to='/404' />
           </Switch>
         </Content>
       </CSSTransition>
@@ -42,4 +74,13 @@ const MainContent = ({ location }) => {
 };
 
 const mapStateToProps = state => ({ userInfo: state.userInfo });
-export default withRouter(connect(mapStateToProps)(MainContent));
+const mapDispatchToProps = dispatch => ({
+  setUserInfo: data => {
+    console.log('maincontent');
+
+    dispatch(setUserInfo(data));
+  }
+});
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(MainContent)
+);

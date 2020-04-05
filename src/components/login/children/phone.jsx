@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import styles from '../conpenent.scss';
-import { Input, Button } from 'antd';
+import { Input, Button, message } from 'antd';
 import { LockOutlined, UserOutlined, PhoneOutlined } from '@ant-design/icons';
 import SmsSendBtn from './smsSendBtn';
 import axios from '../../../request/axiosConfig';
@@ -26,10 +26,10 @@ class Phone extends React.Component {
 
     // 手机号或验证码为空
     if (!phone) {
-      this.props.handleAlert(true, '请输入手机号！');
+      message.error('请输入手机号！');
       return;
     } else if (!code) {
-      this.props.handleAlert(true, '请输入验证码！');
+      message.error('请输入验证码！');
       return;
     }
 
@@ -37,7 +37,7 @@ class Phone extends React.Component {
     const codeCheck = await this.checkSmsCode();
     console.log('codeCheck', codeCheck);
     if (!codeCheck.data.success) {
-      this.props.handleAlert(true, codeCheck.data.message);
+      message.error(codeCheck.data.message);
       return;
     }
 
@@ -56,11 +56,10 @@ class Phone extends React.Component {
       this.props.handleAlert(true, data.message);
       return;
     } else {
-      this.props.handleAlert(true, data.message, 'success');
       // 登录成功跳转首页
-      setTimeout(() => {
+      message.success(data.message, 1, onclose).then(() => {
         this.props.history.push('/index');
-      }, 1000);
+      });
     }
   };
 

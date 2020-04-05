@@ -13,7 +13,7 @@ let service = axios.create({
 // 响应拦截器
 service.interceptors.response.use(
   response => {
-    console.log('headers', response);
+    // console.log('headers', response);
     //获取更新的token
     const { token } = response.data;
     //如果token存在则存在localStorage
@@ -25,7 +25,6 @@ service.interceptors.response.use(
       const { status } = error.response;
       //如果401或405则到登录页
       if (status === 401 || status === 405) {
-        console.log('window', window);
         window.location.href = '/login';
       }
     }

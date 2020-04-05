@@ -41,6 +41,7 @@ class UserInfo extends React.Component {
                 <p>ID：</p>
                 <p>备注：</p>
                 <p>密码：</p>
+                <p>更新时间：</p>
               </div>
               <div>
                 <p>12244</p>
@@ -60,6 +61,7 @@ class UserInfo extends React.Component {
                     修改
                   </Button>
                 </p>
+                <p>2020-03-16 09:00</p>
               </div>
             </div>
           </div>

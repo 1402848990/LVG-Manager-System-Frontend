@@ -1,9 +1,10 @@
 import React from 'react';
-import { Table, Input, Button } from 'antd';
+import { Table, Input, Button, Modal } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined, createFromIconfontCN } from '@ant-design/icons';
 import styles from './index.scss';
 import HostPie from './children/hostPie';
+import CreateHostModal from './children/createHostModal';
 
 const IconFont = createFromIconfontCN({
   scriptUrl: '//at.alicdn.com/t/font_1721121_x0lgkipyqt.js'
@@ -39,7 +40,9 @@ const data = [
 class IndexPage extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      visible: false
+    };
   }
 
   // 搜索
@@ -122,7 +125,14 @@ class IndexPage extends React.Component {
     this.setState({ searchText: '' });
   };
 
+  closeModal = () => {
+    this.setState({
+      visible: false
+    });
+  };
+
   render() {
+    const { visible } = this.state;
     const columns = [
       {
         title: 'ID',
@@ -198,6 +208,8 @@ class IndexPage extends React.Component {
     return (
       <div className={styles.hostList}>
         <div>
+          {/* 创建主机Modal */}
+          <CreateHostModal visible={visible} closeModal={this.closeModal} />
           <Button danger className={styles.batchButton} type='primary'>
             批量删除
           </Button>
@@ -216,6 +228,11 @@ class IndexPage extends React.Component {
             className={styles.batchButton}
             type='primary'
             ghost
+            onClick={() => {
+              this.setState({
+                visible: true
+              });
+            }}
           >
             创建主机
           </Button>

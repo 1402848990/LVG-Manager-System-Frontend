@@ -3,12 +3,13 @@ import React from 'react';
 import styles from '../conpenent.scss';
 import axios from '../../../request/axiosConfig';
 import api from '../../../request/api/api_user';
-import { Button, Alert } from 'antd';
+import { Button, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import Verification from '../../verification';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { setUserInfo } from '@/redux/actions/userInfo';
+import { getIPandAddress } from '../../../utils';
 
 class UserName extends React.Component {
   constructor(props) {
@@ -43,57 +44,60 @@ class UserName extends React.Component {
     const checkRes = this.checkCode.current.getCheckRes();
     // 用户名或者密码为空
     if (!userName || !passWord) {
-      this.props.handleAlert(true, '请输入用户名或密码！');
+      message.error('请输入用户名或密码！');
       return;
     }
     // 验证码不正确
     else if (!checkRes) {
-      this.props.handleAlert(true, '验证码不正确！');
+      message.error('验证码不正确！');
       return;
     }
 
+    // 发送登录请求
+    const { cip, cname } = await getIPandAddress();
     const res = await axios({
       url: api.login,
       method: 'post',
       data: {
         userName,
-        passWord
+        passWord,
+        ip: cip,
+        address: cname
       }
     });
     console.log('res', res);
 
     const { data } = res;
     if (!data.success) {
-      this.props.handleAlert(true, data.message);
+      message.error(data.message);
       return;
     } else {
-      await this.props.handleAlert(true, data.message, 'success');
-
       localStorage.setItem('isLogin', '1');
-      // 模拟生成一些数据
+      // 用户信息存入store中
       this.props.setUserInfo(
         Object.assign(
           {},
-          { userName: 'index', password: 'index' },
+          { userName, id: data.id },
+          { isLogin: 1 },
           { role: { type: 1, name: '超级管理员' } }
         )
       );
+      // 用户信息存localStorage中
       localStorage.setItem(
         'userInfo',
         JSON.stringify(
           Object.assign(
             {},
-            { userName: 'index', password: 'index' },
+            { userName, id: data.id },
             { role: { type: 1, name: '超级管理员' } }
           )
         )
       );
-      this.props.history.push('/index');
 
       // 登录成功跳转首页
-      setTimeout(() => {
+      message.success(`${data.message}正在跳转...`, 1, onclose).then(() => {
         this.props.history.push('/index');
-      }, 1000);
+      });
     }
   };
 

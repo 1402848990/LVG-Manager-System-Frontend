@@ -3,6 +3,7 @@ import HostDetail from '../components/hostDetail';
 import NowMonitor from '../components/nowMonitor';
 import HostList from '../components/hostList';
 import UserInfo from '../components/userInfo';
+import Error404 from '../components/Error404';
 // import Icon from '../views/icon/Index';
 // import Error404 from '../views/error/Error404';
 // import Error500 from '../views/error/Error500';
@@ -32,7 +33,8 @@ export const routes = [
   { path: '/hostDetail', component: HostDetail },
   { path: '/nowMonitor', component: NowMonitor },
   { path: '/hostList', component: HostList },
-  { path: '/userInfo', component: UserInfo }
+  { path: '/userInfo', component: UserInfo },
+  { path: '/404', component: Error404 }
   // { path: '/form/basic', component: BasicForm },
   // { path: '/form/editor', component: Editor },
   // { path: '/form/markdown', component: MarkDown },

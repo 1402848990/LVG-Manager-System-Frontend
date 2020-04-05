@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import { LockOutlined, UserOutlined, PhoneOutlined } from '@ant-design/icons';
 import axios from '../../../request/axiosConfig';
 import api from '../../../request/api/api_user';
@@ -28,16 +28,16 @@ export default class Register extends React.Component {
 
     // 用户名或者密码为空
     if (!userName || !passWord) {
-      this.props.handleAlert(true, '请输入用户名或密码！');
+      message.error('请输入用户名或密码！');
       return;
     } else if (passWord !== passWordCheck) {
-      this.props.handleAlert(true, '两次密码输入不一致！');
+      message.error('两次密码输入不一致！');
       return;
     } else if (!phone) {
-      this.props.handleAlert(true, '请输入手机号！');
+      message.error('请输入手机号！');
       return;
     } else if (!code) {
-      this.props.handleAlert(true, '请输入验证码！');
+      message.error('请输入验证码！');
       return;
     }
 
@@ -45,7 +45,7 @@ export default class Register extends React.Component {
     const codeCheck = await this.checkSmsCode();
     console.log('codeCheck', codeCheck);
     if (!codeCheck.data.success) {
-      this.props.handleAlert(true, codeCheck.data.message);
+      message.error(codeCheck.data.message);
       return;
     }
 
@@ -58,10 +58,11 @@ export default class Register extends React.Component {
 
     // 是否注册成功
     if (!res.data.success) {
-      this.props.handleAlert(true, res.data.message);
+      message.error(res.data.message);
       return;
     }
-    this.props.handleAlert(true, res.data.message, 'success');
+    message.success(res.data.message);
+    // this.props.handleAlert(true, res.data.message, 'success');
   };
 
   /**

@@ -6,8 +6,16 @@ import { setUserInfo } from '@/redux/actions/userInfo';
 import { Layout } from 'antd';
 import MainContent from './MainContent';
 import BreadCrumb from './BreadCrumb';
+import store from '@/redux/store';
 class Index extends Component {
+  // constructor(props) {
+  //   super(props);
+  // }
+
   render() {
+    console.log('layout-store', store.getState());
+
+    console.log('layout---props', this.props);
     const { breadCrumb } = this.props;
     return (
       <div className='layout'>
@@ -23,12 +31,13 @@ class Index extends Component {
     );
   }
 }
+
 const mapStateToProps = state => state;
 const mapDispatchToProps = dispatch => ({
   setUserInfo: data => {
+    console.log('layout');
     dispatch(setUserInfo(data));
   }
 });
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
 
-// export default Index;
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

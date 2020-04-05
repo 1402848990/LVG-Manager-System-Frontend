@@ -74,10 +74,11 @@
     // border: red 1px solid;
     padding: 10px 0;
     .data {
+      padding-left: 18px !important;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      text-align: center;
+      // text-align: center;
       border-left: 1px #f0f0f0 solid;
       .progress {
         width: 66%;

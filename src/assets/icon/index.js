@@ -5,7 +5,7 @@ import React from 'react';
 import { createFromIconfontCN } from '@ant-design/icons';
 
 const IconFont = createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_1721121_o4y719yrwxs.js'
+  scriptUrl: '//at.alicdn.com/t/font_1721121_mzzrevldq4d.js'
 });
 
 export default class ICON extends React.Component {
@@ -13,6 +13,6 @@ export default class ICON extends React.Component {
     super(props);
   }
   render() {
-    return <IconFont type={this.props.type} />;
+    return <IconFont type={this.props.type} style={this.props.styles} />;
   }
 }

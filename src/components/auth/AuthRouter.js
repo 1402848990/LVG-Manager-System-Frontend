@@ -1,10 +1,13 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import { Route, Redirect } from 'react-router-dom';
+import store from '@/redux/store';
 
 const AuthRouter = ({ component: Component, ...rest }) => {
-  console.log('rest', rest);
+  console.log('store', store.getState());
+  // const {}
   // 是否登录
+  const { userName } = store.getState();
   const isLogged = localStorage.getItem('isLogin') === '1' ? true : false;
   return (
     <Route

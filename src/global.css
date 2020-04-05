@@ -96,3 +96,8 @@ button {
   border-top-right-radius: 8px !important;
   border-bottom-right-radius: 8px !important;
 }
+
+/* message的修改 */
+.ant-message-notice-content {
+  border-radius: 20px !important;
+}

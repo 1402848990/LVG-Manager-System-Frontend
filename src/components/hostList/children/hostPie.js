@@ -1,5 +1,6 @@
 import React from 'react';
 import { Pie } from '@antv/g2plot';
+import { countNum } from '@/utils/index';
 import styles from '../index.scss';
 
 class HostPie extends React.Component {
@@ -21,14 +22,42 @@ class HostPie extends React.Component {
         }
       ]
     };
+    this.piePlot = null;
   }
 
   componentDidMount() {
     this.renderPie();
   }
 
+  async UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log('nextProps', nextProps);
+    // 所有主机的状态
+    const stateList = nextProps.allHost.map(item => item.state);
+    // 不同状态主机的数量
+    const stateAndNum = countNum(stateList);
+    const data = stateAndNum.map(item => {
+      return {
+        type: item[0] === 1 ? '正常' : item[0] === 0 ? '关机' : '告警',
+        value: item[1]
+      };
+    });
+    this.piePlot ? this.piePlot.changeData(data) : null;
+    // await this.setState(
+    //   {
+    //     data
+    //   },
+    //   () => {
+    //     console.log(this.state);
+    //   }
+    // );
+  }
+
+  componentWillUnmount() {
+    this.piePlot.destroy();
+  }
+
   renderPie = () => {
-    const piePlot = new Pie(document.getElementById('container'), {
+    this.piePlot = new Pie(document.getElementById('containers'), {
       forceFit: true,
       title: {
         visible: true,
@@ -42,19 +71,25 @@ class HostPie extends React.Component {
       data: this.state.data,
       angleField: 'value',
       colorField: 'type',
-      color: ['#20a53a', '#ff4d4f', 'rgb(100, 118, 151)'],
+      color: state => {
+        return state === '正常'
+          ? '#20a53a'
+          : state === '关机'
+          ? 'rgb(100, 118, 151)'
+          : '#ff4d4f';
+      },
       label: {
         visible: true,
         type: 'spider'
       }
     });
-    piePlot.render();
+    this.piePlot.render();
   };
 
   render() {
     return (
       <div className={styles.hostPie}>
-        <div id='container'></div>
+        <div id='containers'></div>
       </div>
     );
   }

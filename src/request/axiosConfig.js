@@ -13,7 +13,6 @@ let service = axios.create({
 // 响应拦截器
 service.interceptors.response.use(
   response => {
-    // console.log('headers', response);
     //获取更新的token
     const { token } = response.data;
     //如果token存在则存在localStorage

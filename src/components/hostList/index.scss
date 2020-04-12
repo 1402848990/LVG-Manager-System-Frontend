@@ -22,11 +22,24 @@
       display: inline-block;
       border-radius: 50%;
       margin-right: 5px;
+      background: rgb(100, 118, 151);
+    }
+    .warn::before {
+      content: '';
+      width: 10px;
+      height: 10px;
+      display: inline-block;
+      border-radius: 50%;
+      margin-right: 5px;
       background: #ff4d4f;
     }
   }
   .hostPie {
-    width: 40%;
+    overflow: hidden;
+    margin-right: 10px;
+    float: left;
+    width: 36%;
+    height: 380px;
     margin-top: 10px;
     background: white;
     padding-right: 10px;

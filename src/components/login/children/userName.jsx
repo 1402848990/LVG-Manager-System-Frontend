@@ -28,7 +28,7 @@ class UserName extends React.Component {
   handleInput = event => {
     event.persist();
     const { name, value } = event.target;
-    console.log(name, value);
+    // console.log(name, value);
     this.setState({
       [name]: value
     });
@@ -38,7 +38,7 @@ class UserName extends React.Component {
    * 登录
    */
   submit = async () => {
-    console.log(this.props);
+    // console.log(this.props);
     const { userName, passWord } = this.state;
     // 验证码
     const checkRes = this.checkCode.current.getCheckRes();
@@ -65,7 +65,7 @@ class UserName extends React.Component {
         address: cname
       }
     });
-    console.log('res', res);
+    // console.log('res', res);
 
     const { data } = res;
     if (!data.success) {

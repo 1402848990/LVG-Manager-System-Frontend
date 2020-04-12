@@ -4,7 +4,6 @@ import { Route, Redirect } from 'react-router-dom';
 import store from '@/redux/store';
 
 const AuthRouter = ({ component: Component, ...rest }) => {
-  console.log('store', store.getState());
   // const {}
   // 是否登录
   const { userName } = store.getState();

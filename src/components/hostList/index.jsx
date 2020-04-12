@@ -1,49 +1,159 @@
 import React from 'react';
-import { Table, Input, Button, Modal } from 'antd';
+import { Table, Input, Button, Modal, message } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined, createFromIconfontCN } from '@ant-design/icons';
 import styles from './index.scss';
 import HostPie from './children/hostPie';
 import CreateHostModal from './children/createHostModal';
+import OperationLog from './children/operationLog';
+import axios from '@/request/axiosConfig';
+import api_host from '@/request/api/api_host';
+import api_logs from '@/request/api/api_logs';
+import { withRouter } from 'react-router-dom';
+import moment from 'moment';
 
 const IconFont = createFromIconfontCN({
   scriptUrl: '//at.alicdn.com/t/font_1721121_x0lgkipyqt.js'
 });
 
-const data = [
-  {
-    id: 101,
-    system: 'Windows Server 2008 R2',
-    hostName: '主机1',
-    createdAt: '2020-03-21',
-    netWidth: 5,
-    hostState: 1
-  },
-  {
-    id: 102,
-    system: 'CentOS',
-    hostName: '主机2',
-    createdAt: '2020-04-21',
-    netWidth: 10,
-    hostState: 0
-  },
-  {
-    id: 103,
-    system: 'Ubuntu',
-    hostName: '主机3',
-    createdAt: '2020-03-25',
-    netWidth: 20,
-    hostState: 1
-  }
-];
-
 class IndexPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      visible: false
+      visible: false,
+      loading: true,
+      allHost: [],
+      selected: []
     };
+    this.operationLogs = React.createRef();
   }
+
+  async componentDidMount() {
+    await this.getAllHost();
+  }
+
+  /**
+   * 批量开/关机
+   */
+  openOrCloseBatch = async type => {
+    const res = await axios({
+      url: type === 'open' ? api_host.openHostBatch : api_host.closeHostBatch,
+      method: 'post',
+      data: {
+        ids: this.state.selected
+      }
+    });
+    console.log('res', res);
+    if (res.data.success) {
+      // 执行成功
+      const { id: uid } = JSON.parse(localStorage.getItem('userInfo'));
+      // 操作日志写入
+      this.saveOperation(
+        uid,
+        type === 'open' ? '开启' : '关闭',
+        JSON.stringify(this.state.selected)
+      );
+      message.success(
+        `${type === 'open' ? '开启' : '关闭'}--${
+          res.data.data[0]
+        }台主机--成功！`
+      );
+      await this.getAllHost();
+      // 重新加载操作日志
+      this.operationLogs.current.getOperationLogs();
+    } else {
+      // 执行失败
+      message.success(`服务器错误！`);
+    }
+  };
+
+  /**
+   * 批量删除
+   */
+  deleteBatch = async () => {
+    const res = await axios({
+      url: api_host.deleteHostBatch,
+      method: 'post',
+      data: {
+        ids: this.state.selected
+      }
+    });
+    console.log('res', res);
+    if (res.data.success) {
+      // 操作日志写入
+      const { id: uid } = JSON.parse(localStorage.getItem('userInfo'));
+      this.saveOperation(uid, '删除', JSON.stringify(this.state.selected));
+      message.success(`删除-${res.data.data}台主机成功！`);
+      await this.getAllHost();
+      // 重新加载操作日志
+      this.operationLogs.current.getOperationLogs();
+    } else {
+      message.success(`服务器错误！删除失败！`);
+    }
+  };
+
+  // 操作日志写入
+  saveOperation = async (uid, type, hids, log) => {
+    const res = await axios({
+      url: api_logs.saveOperationLogs,
+      method: 'post',
+      data: {
+        info: {
+          uid,
+          type,
+          hids
+        }
+      }
+    });
+  };
+
+  /**
+   * 获取所有主机信息
+   */
+  getAllHost = async () => {
+    await this.setState({
+      loading: true
+    });
+    const { id: uid } = JSON.parse(localStorage.getItem('userInfo'));
+    // 接口
+    const res = await axios({
+      url: api_host.getAllHost,
+      method: 'post',
+      data: {
+        uid
+      }
+    });
+
+    await this.setState({
+      allHost: res.data.data,
+      loading: false
+    });
+  };
+
+  // 配置table选择项
+  rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        'selectedRows: ',
+        selectedRows
+      );
+      // 选择项存到state中
+      this.setState(
+        {
+          selected: selectedRowKeys
+        },
+        () => {
+          console.log(this.state);
+        }
+      );
+    },
+    getCheckboxProps: record => ({
+      disabled: record.name === 'Disabled User'
+      // Column configuration not to be checked
+      // id: record.id
+    })
+  };
 
   // 搜索
   getColumnSearchProps = dataIndex => ({
@@ -132,16 +242,26 @@ class IndexPage extends React.Component {
   };
 
   render() {
-    const { visible } = this.state;
+    const { visible, allHost, loading } = this.state;
     const columns = [
       {
         title: 'ID',
-        dataIndex: 'id'
+        dataIndex: 'id',
+        render: text => text.toString()
       },
       {
         title: '主机名',
         dataIndex: 'hostName',
-        ...this.getColumnSearchProps('hostName')
+        ...this.getColumnSearchProps('hostName'),
+        render: (text, record) => (
+          <a
+            onClick={() => {
+              this.props.history.push(`/hostDetail/${record.id}`);
+            }}
+          >
+            {text}
+          </a>
+        )
       },
       {
         title: '系统',
@@ -159,7 +279,7 @@ class IndexPage extends React.Component {
                   : 'iconicon_ubuntu'
               }
             />
-            {text}12
+            {text}
           </>
         )
       },
@@ -169,20 +289,25 @@ class IndexPage extends React.Component {
         // 排序
         sorter: (a, b) => {
           return a.createdAt - b.createdAt;
-        }
+        },
+        render: text => moment(text).format('YYYY-MM-DD HH:mm:ss')
       },
       {
         title: '带宽',
         dataIndex: 'netWidth',
         // 排序
         sorter: (a, b) => {
-          console.log('a', a, 'b', b);
           return a.netWidth - b.netWidth;
-        }
+        },
+        render: text => `${text}M`
+      },
+      {
+        title: '版本',
+        dataIndex: 'version'
       },
       {
         title: '状态',
-        dataIndex: 'hostState',
+        dataIndex: 'state',
         filters: [
           {
             text: '正常',
@@ -194,14 +319,15 @@ class IndexPage extends React.Component {
           }
         ],
         onFilter: (value, record) => {
-          console.log(value, record);
           return record.hostState === value;
         },
         render: text =>
           text === 1 ? (
             <span className={styles.ok}>正常</span>
-          ) : (
+          ) : text === 0 ? (
             <span className={styles.close}>关机</span>
+          ) : (
+            <span className={styles.warn}>告警</span>
           )
       }
     ];
@@ -209,14 +335,21 @@ class IndexPage extends React.Component {
       <div className={styles.hostList}>
         <div>
           {/* 创建主机Modal */}
-          <CreateHostModal visible={visible} closeModal={this.closeModal} />
-          <Button danger className={styles.batchButton} type='primary'>
-            批量删除
-          </Button>
-          <Button className={styles.batchButton} type='primary'>
+          <CreateHostModal
+            saveOperation={this.saveOperation}
+            visible={visible}
+            closeModal={this.closeModal}
+            getAllHost={this.getAllHost}
+          />
+          <Button
+            onClick={this.openOrCloseBatch.bind(this, 'close')}
+            className={styles.batchButton}
+            type='primary'
+          >
             批量关机
           </Button>
           <Button
+            onClick={this.openOrCloseBatch.bind(this, 'open')}
             style={{ backgroundColor: '#20a53a' }}
             className={styles.batchButton}
             type='primary'
@@ -236,12 +369,33 @@ class IndexPage extends React.Component {
           >
             创建主机
           </Button>
-          <Table className={styles.table} dataSource={data} columns={columns} />
+          <Button
+            onClick={this.deleteBatch}
+            danger
+            className={styles.batchButton}
+            type='primary'
+          >
+            批量删除
+          </Button>
+          {/* 表格 */}
+          <Table
+            loading={loading}
+            rowKey='id'
+            rowSelection={{
+              ...this.rowSelection
+            }}
+            className={styles.table}
+            dataSource={allHost}
+            columns={columns}
+          />
         </div>
-        <HostPie />
+        {/* 主机状态扇形图 */}
+        <HostPie allHost={allHost} />
+        {/* 操作日志 */}
+        <OperationLog ref={this.operationLogs} />
       </div>
     );
   }
 }
 
-export default IndexPage;
+export default withRouter(IndexPage);

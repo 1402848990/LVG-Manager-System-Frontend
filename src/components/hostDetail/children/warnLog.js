@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from '../index.scss';
-import { List, message, Avatar, Spin } from 'antd';
+import { List, message, Avatar, Spin, Divider } from 'antd';
+import IconFont from '@/assets/icon';
 import reqwest from 'reqwest';
 import './warnLog.css';
 
@@ -60,7 +61,8 @@ export default class WarnLog extends React.Component {
 
   render() {
     return (
-      <div className='demo-infinite-container'>
+      <div className='demo-infinite-container' style={{ height: '259px' }}>
+        <Divider orientation='left'>预警日志</Divider>
         <InfiniteScroll
           initialLoad={false}
           pageStart={0}
@@ -74,12 +76,15 @@ export default class WarnLog extends React.Component {
               <List.Item key={item.id}>
                 <List.Item.Meta
                   avatar={
-                    <Avatar src='https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png' />
+                    <Avatar
+                      style={{ background: '#a7a2a2' }}
+                      icon={<IconFont type='iconwarn' />}
+                    />
                   }
-                  title={<a href='https://ant.design'>{item.name.last}</a>}
-                  description={item.email}
+                  title={<a href='https://ant.design'>CPU使用率预警</a>}
+                  description='触发值为：90%'
                 />
-                <div>Content</div>
+                <div>2020-04-10 16:20:13</div>
               </List.Item>
             )}
           >

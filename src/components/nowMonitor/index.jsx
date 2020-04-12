@@ -1,3 +1,6 @@
+/**
+ * 全部监控页
+ */
 import React from 'react';
 import PoltList from './children/poltList';
 import styles from './index.scss';

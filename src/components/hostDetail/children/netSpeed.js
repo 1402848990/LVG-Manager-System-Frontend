@@ -1,5 +1,9 @@
+/**
+ * @description 主机详情中网络监控
+ */
 import * as React from 'react';
 import styles from '../index.scss';
+import Websocket from 'react-websocket';
 import {
   Chart,
   Tooltip,
@@ -10,32 +14,39 @@ import {
   StackArea,
   Series
 } from 'viser-react';
-
-const scale = [
-  {
-    dataKey: 'time',
-    alias: '时间',
-    type: 'time',
-    mask: 'MM:ss',
-    nice: false,
-    range: [0, 1]
-  },
-  {
-    dataKey: 'temperature',
-    alias: '网络速率',
-    min: 0,
-    max: 100
-  },
-  {
-    dataKey: 'type',
-    type: 'cat'
-  }
-];
+import moment from 'moment';
 
 export default class NetSpeed extends React.Component {
   state = {
     data: []
   };
+
+  scale = [
+    {
+      dataKey: 'time',
+      alias: '时间',
+      type: 'timeCat',
+      // mask: 'MM:ss',
+      formatter: data => moment(data).format('HH:mm:ss'),
+      nice: false,
+      range: [0, 1],
+      tickCount: 6,
+      tickInterval: 1
+    },
+    {
+      dataKey: 'speed',
+      alias: '网络速率',
+      min: 0,
+      max: 5000
+      // this.props &&
+      // this.props.hostDetail &&
+      // this.props.hostDetail.netWidth * 1024
+    },
+    {
+      dataKey: 'type',
+      type: 'cat'
+    }
+  ];
 
   updateData = () => {
     const me = this;
@@ -50,46 +61,89 @@ export default class NetSpeed extends React.Component {
     }
     newData.push({
       time: time,
-      temperature: temperature1,
+      speed: temperature1,
       type: '上行'
     });
     newData.push({
       time: time,
-      temperature: temperature2,
+      speed: temperature2,
       type: '下行'
     });
-    me.setState({
-      data: newData
-    });
+    me.setState(
+      {
+        data: newData
+      },
+      () => {
+        // console.log(this.state);
+      }
+    );
   };
 
-  componentDidMount() {
-    setInterval(this.updateData, 3000);
-  }
+  // componentDidMount() {
+  //   setInterval(this.updateData, 3000);
+  // }
+
+  // 处理网络监控数据
+  handleNetData = async data => {
+    // console.log('data', data);
+    const nextData = [];
+    const oldData = this.state.data.slice();
+    const newData =
+      (data && !data.includes('连接成功') && JSON.parse(data)) || [];
+    // 如果state中的数据大于七条去掉多余数据
+    if (oldData.length > 14) {
+      oldData.shift();
+      oldData.shift();
+    }
+    // 新数据追加到旧数据中
+    newData.map(x => {
+      oldData.push(x);
+    });
+    await this.setState(
+      {
+        data: oldData
+      },
+      () => {
+        // console.log(this.state);
+      }
+    );
+
+    // NET数据存入state中
+    // await this.setState({
+    //   netData: (data && !data.includes('连接成功') && JSON.parse(data)) || {}
+    // });
+  };
 
   render() {
     const getData = this.state.data;
+    const urlNet = `ws://localhost:8088/NetWsOne/hid=${this.props.hid}`;
     return (
       <div className={styles.netSpeed}>
-        {' '}
+        <Websocket
+          url={urlNet}
+          onMessage={this.handleNetData}
+          reconnectIntervalInMilliSeconds={10000}
+          sendMessage='net'
+        />{' '}
         <Chart
+          padding={[30, 40, 30, 60]}
           forceFit={true}
           height={320}
-          width={320}
+          // width={370}
           data={getData}
-          scale={scale}
+          scale={this.scale}
         >
           <Tooltip />
-          <Axis tickCount={4} />
+          <Axis autoPaint={true} />
           <Legend allowAllCanceled={true} />
           <Line
-            position='time*temperature'
+            position='time*speed'
             color={['type', ['#ff7f0e', '#2ca02c']]}
             shape='smooth'
           />
           <Series
             adjust='stack'
-            position='temperature*1'
+            position='speed*1'
             shape='smooth'
             quickType='area'
           />

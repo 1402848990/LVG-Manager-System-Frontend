@@ -1,5 +1,23 @@
 import axios from 'axios';
 
+// 查找重复元素及其个数
+function countNum(arr) {
+  const _res = [];
+  arr.sort();
+  for (let i = 0; i < arr.length; ) {
+    let count = 0;
+    for (let j = i; j < arr.length; j++) {
+      if (arr[i] == arr[j]) {
+        count++;
+      }
+    }
+    _res.push([arr[i], count]);
+    i += count;
+  }
+  return _res;
+}
+
+// 获取IP、地点等地理位置
 async function getIPandAddress() {
   const res = await axios({
     url: '/cityjson?ie=json',
@@ -60,4 +78,4 @@ const unique = arr => {
   return res;
 };
 
-export { unique, debounce, getIPandAddress };
+export { unique, debounce, getIPandAddress, countNum };

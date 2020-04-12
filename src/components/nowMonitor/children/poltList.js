@@ -1,32 +1,15 @@
 import React from 'react';
-import {
-  Chart,
-  Tooltip,
-  Axis,
-  Legend,
-  SmoothLine,
-  Point,
-  Slider,
-  Plugin
-} from 'viser-react';
 import { AreaChart } from 'bizcharts-plot';
+import Websocket from 'react-websocket';
 import { Row, Col } from 'antd';
+import Cpu from './cpu';
+import Gpu from './gpu';
+import Ram from './ram';
+import Net from './net';
+import axios from '@/request/axiosConfig';
+import api_logs from '@/request/api/api_logs';
 import styles from '../index.scss';
-
-const scale = [
-  {
-    dataKey: 'month',
-    alias: '月份'
-  },
-  {
-    dataKey: 'value',
-    alias: '数值'
-  },
-  {
-    dataKey: 'type',
-    type: 'cat'
-  }
-];
+import moment from 'moment';
 
 class PoltList extends React.Component {
   constructor(props) {
@@ -37,131 +20,84 @@ class PoltList extends React.Component {
   }
 
   async componentDidMount() {
-    const res = await fetch(
-      'https://g2plot.antv.vision/zh/examples/data/sales.json'
-    );
-    const res3 = await fetch(
-      'https://g2plot.antv.vision/zh/examples/data/oil.json'
-    );
-    const d = await res.json();
-    const d3 = await res3.json();
+    await this.getCpuData();
+    await this.getNetData();
+  }
+
+  // 获取cpu数据
+  getCpuData = async () => {
+    const res = await axios({
+      url: api_logs.cpuLogs,
+      method: 'post',
+      data: {
+        hid: 41
+      }
+    });
+    const d = res.data.data.map(x => {
+      x.createdAt = moment(x.createdAt).format('MM-DD HH:mm:ss');
+      return x;
+    });
+    await this.setState({
+      cpuData: d
+    });
+  };
+
+  // 获取net数据
+  getNetData = async () => {
+    const res = await axios({
+      url: api_logs.getNetLogs,
+      method: 'post',
+      data: {
+        hid: 41
+      }
+    });
+    const formatList = [];
+    res.data.data.map(x => {
+      const time = moment(x.createdAt).format('MM-DD HH:mm:ss');
+      const d = {};
+      const u = {};
+      d.createdAt = time;
+      d.type = '下行';
+      d.speed = x.down;
+      u.createdAt = time;
+      u.type = '上行';
+      u.speed = x.up;
+      formatList.push(u);
+      formatList.push(d);
+    });
+
     await this.setState(
       {
-        data: d,
-        data3: d3
+        netData: formatList
       },
       () => {
         console.log(this.state);
       }
     );
-  }
+  };
 
   render() {
+    const { cpuData, netData } = this.state;
     return (
       <div className={styles.plotList}>
-        <Row justify='space-between' className={styles.row}>
-          {/* CPU */}
-          <Col className={styles.col} span={11}>
-            <AreaChart
-              data={this.state.data}
-              padding='auto'
-              title={{
-                text: 'CPU使用率监控详情'
-              }}
-              description={{
-                text: '本监控为一周前至今CPU使用率监控'
-              }}
-              xField='城市'
-              yField='销售额'
-              xAxis={{
-                visible: true,
-                label: {
-                  autoHide: true
-                }
-              }}
-              yAxis={{
-                label: {
-                  // 数值格式化为千分位
-                  formatter: v =>
-                    `${v}`.replace(/\d{1,3}(?=(\d{3})+$)/g, s => `${s},`)
-                }
-              }}
-              slider={{
-                start: '常熟市',
-                end: '江口'
-              }}
-              forceFit
-            />
+        <Row justify='center' className={styles.row}>
+          {/* CPU监控 */}
+          <Col style={{ marginRight: '12px' }} className={styles.col} span={11}>
+            <Cpu cpuData={cpuData} />
           </Col>
           {/* 内存 */}
           <Col className={styles.col} span={11}>
-            <AreaChart
-              data={this.state.data}
-              padding='auto'
-              title={{
-                text: 'CPU使用率监控详情'
-              }}
-              description={{
-                text: '本监控为一周前至今CPU使用率监控'
-              }}
-              xField='城市'
-              yField='销售额'
-              xAxis={{
-                visible: true,
-                label: {
-                  autoHide: true
-                }
-              }}
-              yAxis={{
-                label: {
-                  // 数值格式化为千分位
-                  formatter: v =>
-                    `${v}`.replace(/\d{1,3}(?=(\d{3})+$)/g, s => `${s},`)
-                }
-              }}
-              slider={{
-                start: '常熟市',
-                end: '江口'
-              }}
-              forceFit
-            />
+            <Ram cpuData={cpuData} />
           </Col>
         </Row>
-        <Row justify='space-around'>
-          <Col className={styles.col} span={11}>
-            <AreaChart
-              padding='auto'
-              data={this.state.data3}
-              title='近期网络速率'
-              xField='date'
-              yField='value'
-              stackField='country'
-              colors={[
-                '#6897a7',
-                '#8bc0d6',
-                '#60d7a7',
-                '#dedede',
-                '#fedca9',
-                '#fab36f',
-                '#d96d6f'
-              ]}
-              xAxis={{
-                type: 'time',
-                tickCount: 5
-              }}
-              legend={{
-                visible: true,
-                position: 'right-top'
-              }}
-              smooth
-              forceFit
-              slider={{
-                start: '1970',
-                end: '2012'
-              }}
-            />
+        <Row justify='center'>
+          {/* 网络监控 */}
+          <Col style={{ marginRight: '12px' }} className={styles.col} span={11}>
+            <Net netData={netData} />
           </Col>
-          <Col className={styles.col} span={11}></Col>
+          <Col className={styles.col} span={11}>
+            <Gpu cpuData={cpuData} />
+          </Col>
         </Row>
       </div>
     );

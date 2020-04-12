@@ -15,7 +15,6 @@ class Index extends Component {
   render() {
     console.log('layout-store', store.getState());
 
-    console.log('layout---props', this.props);
     const { breadCrumb } = this.props;
     return (
       <div className='layout'>
@@ -35,7 +34,6 @@ class Index extends Component {
 const mapStateToProps = state => state;
 const mapDispatchToProps = dispatch => ({
   setUserInfo: data => {
-    console.log('layout');
     dispatch(setUserInfo(data));
   }
 });

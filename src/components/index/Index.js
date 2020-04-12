@@ -15,13 +15,10 @@ class Index extends Component {
       allHost: [],
       healthyScatter: []
     };
-    this.ws = React.createRef();
   }
 
   async componentDidMount() {
     await this.getAllHost();
-    // Websocket.sendMessage(11);
-    // console.log('refs', this.ws.current.sendMessage('ok'));
   }
 
   /**
@@ -65,17 +62,6 @@ class Index extends Component {
         ) : (
           <Skeleton active paragraph={{ rows: 10 }} />
         )}
-
-        {/* <Websocket
-            url='ws://localhost:8088/wstest'
-            onMessage={this.handleData}
-            reconnectIntervalInMilliSeconds={10000}
-            sendMessage='111'
-            ref={this.ws}
-            // onOpen={() => {
-            //   this.ws.current.sendMessage('ok');
-            // }}
-          /> */}
       </div>
     );
   }

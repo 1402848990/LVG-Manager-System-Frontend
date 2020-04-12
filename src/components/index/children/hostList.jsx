@@ -6,6 +6,7 @@ import Websocket from 'react-websocket';
 import { List, Avatar, Card, Col, Row, Progress } from 'antd';
 import { WindowsOutlined } from '@ant-design/icons';
 import IconFont from '@/assets/icon';
+import { withRouter } from 'react-router-dom';
 import styles from '../index.scss';
 
 // progress状态颜色
@@ -70,11 +71,11 @@ class HostList extends React.Component {
           url='ws://localhost:8088/CpuWs'
           onMessage={this.handleCpuData}
           reconnectIntervalInMilliSeconds={10000}
-          sendMessage='111'
+          sendMessage='cpu'
           ref={this.ws}
-          // onOpen={() => {
-          //   this.ws.current.sendMessage('ok');
-          // }}
+          onOpen={() => {
+            this.ws.current.sendMessage('getCurrentCpuData');
+          }}
         />
         <Websocket
           url='ws://localhost:8088/NetWs'
@@ -139,7 +140,11 @@ class HostList extends React.Component {
             ).toString(); // 为了避免NAN时报错，所以转成string
 
             return (
-              <List.Item>
+              <List.Item
+                onClick={() => {
+                  this.props.history.push(`/hostDetail/${item.id}`);
+                }}
+              >
                 <Row className={styles.row} gutter={4}>
                   <Col span={5} className={styles.left}>
                     {/* 左侧 */}
@@ -235,4 +240,4 @@ class HostList extends React.Component {
   }
 }
 
-export default HostList;
+export default withRouter(HostList);

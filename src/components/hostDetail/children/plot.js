@@ -14,10 +14,14 @@ class Plot extends React.Component {
     return (
       <div className={styles.plot}>
         <div style={{ overflow: 'hidden' }}>
-          <NetSpeed />
-          <Healthy />
+          <NetSpeed hid={this.props.hid} />
+          <Healthy
+            hostDetail={this.props.hostDetail}
+            cpuData={this.props.cpuData}
+            hid={this.props.hid}
+          />
         </div>
-        <WarnLog />
+        <WarnLog hid={this.props.hid} />
       </div>
     );
   }

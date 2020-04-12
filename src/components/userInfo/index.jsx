@@ -1,18 +1,85 @@
+/**
+ * @description 用户资料
+ */
 import React from 'react';
-import { Card, Avatar, Button } from 'antd';
+import { Card, Avatar, Button, Input } from 'antd';
 import { UserOutlined, EditOutlined } from '@ant-design/icons';
+import axios from '@/request/axiosConfig';
+import api from '@/request/api/api_user';
+import LoginLog from './children/loginLog';
 import styles from './index.scss';
+import moment from 'moment';
 
 class UserInfo extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      userInfo: {},
+      changeName: '',
+      nameEdit: false
+    };
   }
 
+  async componentDidMount() {
+    await this.getUserInfo();
+  }
+
+  // 获取用户资料
+  getUserInfo = async () => {
+    const { id } = JSON.parse(localStorage.getItem('userInfo'));
+    const res = await axios({
+      url: api.userInfo,
+      method: 'post',
+      data: {
+        id
+      }
+    });
+    await this.setState({
+      userInfo: res.data.info,
+      changeName: res.data.info.userName
+    });
+  };
+
   // 修改名字
-  editName = () => {};
+  editName = async () => {
+    await this.setState({
+      nameEdit: true
+    });
+  };
+
+  // 名字修改失去焦点
+  handleNameBlur = async () => {
+    console.log('失去焦点');
+    await axios({
+      url: api.editUserInfo,
+      method: 'post',
+      data: {
+        changeData: {
+          userName: this.state.changeName
+        },
+        id: this.state.userInfo.id
+      }
+    });
+    await this.setState({
+      nameEdit: false
+    });
+    await this.getUserInfo();
+  };
+
+  handlePicChange = e => {
+    e.persist();
+    console.log(e);
+  };
 
   render() {
+    const {
+      userName,
+      phone,
+      createdAt,
+      updatedAt,
+      version,
+      id
+    } = this.state.userInfo;
     return (
       <div className='shadow-radius'>
         {' '}
@@ -20,9 +87,29 @@ class UserInfo extends React.Component {
           <div className={styles.userInfo}>
             <div className={styles.avatar}>
               <Avatar icon={<UserOutlined />} size={90} />
+              {/* <PicUpload /> */}
               <div className={styles.userName}>
                 <span>
-                  admin
+                  {this.state.nameEdit ? (
+                    <Input
+                      onBlur={this.handleNameBlur}
+                      onChange={value => {
+                        value.persist();
+                        this.setState({
+                          changeName: value.target.value
+                        });
+                        console.log('value', value);
+                      }}
+                      maxLength={10}
+                      style={{ width: '100px' }}
+                      size='small'
+                      defaultValue={userName}
+                      value={this.state.changeName}
+                    />
+                  ) : (
+                    userName
+                  )}
+
                   <EditOutlined
                     onClick={this.editName}
                     style={{
@@ -33,7 +120,7 @@ class UserInfo extends React.Component {
                   />
                 </span>
                 <br />
-                <span className={styles.phone}>15562976106</span>
+                <span className={styles.phone}>{phone}</span>
               </div>
             </div>
             <div className={styles.info}>
@@ -41,10 +128,12 @@ class UserInfo extends React.Component {
                 <p>ID：</p>
                 <p>备注：</p>
                 <p>密码：</p>
+                <p>注册时间：</p>
                 <p>更新时间：</p>
+                <p>修改次数：</p>
               </div>
               <div>
-                <p>12244</p>
+                <p>{id}</p>
                 <p>
                   {' '}
                   <EditOutlined
@@ -61,11 +150,15 @@ class UserInfo extends React.Component {
                     修改
                   </Button>
                 </p>
-                <p>2020-03-16 09:00</p>
+                <p>{moment(createdAt).format('YYYY-MM-DD HH:mm:ss')}</p>
+                <p>{moment(updatedAt).format('YYYY-MM-DD HH:mm:ss')}</p>
+                <p>{version}次</p>
               </div>
             </div>
           </div>
         </Card>
+        {/* 登录日志 */}
+        <LoginLog />
       </div>
     );
   }

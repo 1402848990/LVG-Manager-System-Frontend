@@ -1,0 +1,45 @@
+.net {
+  top: 25px;
+  position: relative;
+  font-size: 20px;
+  span {
+    display: inline-block;
+    width: 25%;
+    text-align: center;
+  }
+  .title {
+    color: #d9d9ea;
+  }
+  .value {
+    color: #7fff00;
+  }
+}
+.netSpeed {
+  position: relative;
+  top: 10%;
+}
+.config {
+  padding-top: 5%;
+  color: whitesmoke;
+  font-size: 18px;
+  text-align: center;
+  line-height: 30px;
+  .name {
+    span {
+      padding-right: 30px;
+    }
+  }
+  .value {
+  }
+}
+.time {
+  padding-top: 15px;
+  p {
+    font-size: 16px;
+
+    padding-left: 5%;
+    color: #4ef5e6 !important;
+    /* padding-bottom: 0; */
+    margin-bottom: 5px;
+  }
+}

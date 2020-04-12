@@ -15,6 +15,7 @@ import {
 } from 'antd';
 import axios from '@/request/axiosConfig';
 import api from '@/request/api/api_host';
+import api_logs from '@/request/api/api_logs';
 
 const { Option } = Select;
 
@@ -37,25 +38,43 @@ const validateMessages = {
 
 // 操作系统类型
 const sysType = [
-  'windows server 2008 R2',
-  'windows server 2012 R2',
-  'windows server 2016 R2',
-  'centOS',
+  'Windows Server 2008 R2',
+  'Windows Server 2012 R2',
+  'Windows Server 2016 R2',
+  'CentOS',
   'Ubuntu'
 ];
-const opt = sysType.map(item => <Option value={item}>{item}</Option>);
+const opt = sysType.map(item => (
+  <Option key={item} value={item}>
+    {item}
+  </Option>
+));
 
 // 内存大小
 const ramSize = [1, 2, 4, 8, 16, 32];
-const optRAM = ramSize.map(item => <Option value={item}>{item}G</Option>);
+const optRAM = ramSize.map(item => (
+  <Option key={item} value={item}>
+    {item}G
+  </Option>
+));
 
 // 处理器核心数
 const core = [1, 2, 4, 8];
-const optCore = core.map(item => <Option value={item}>{item}核</Option>);
+const optCore = core.map(item => (
+  <Option key={item} value={item}>
+    {item}核
+  </Option>
+));
 
 export default function createHostModal(props) {
   // state
   const [loading, setLoading] = useState(false);
+
+  const [form] = Form.useForm();
+
+  const valuesChange = value => {
+    console.log('value', value);
+  };
 
   // 创建主机按钮
   const onFinish = async values => {
@@ -65,6 +84,8 @@ export default function createHostModal(props) {
     // 取出uid
     const { id: uid } = JSON.parse(localStorage.getItem('userInfo'));
     values.uid = uid;
+    values.cDiskUsed = (Math.random() * 15 + 15).toFixed(2); //C盘使用量
+    // values.system.includes('Windows') ? (values.dDisk = undefined) : null;
 
     const data = {
       hostInfo: { ...values }
@@ -77,6 +98,11 @@ export default function createHostModal(props) {
       method: 'post',
       data
     });
+    if (res.data.success) {
+      // 操作日志写入
+      const { id: uid } = JSON.parse(localStorage.getItem('userInfo'));
+      props.saveOperation(uid, '创建', JSON.stringify([res.data.id]));
+    }
     console.log('res', res);
 
     setTimeout(() => {
@@ -86,6 +112,7 @@ export default function createHostModal(props) {
     // 关闭Modal并弹出message
     props.closeModal();
     message.success(`主机：${values.hostName}，创建成功！`);
+    props.getAllHost(); // 刷新数据
   };
 
   return (
@@ -96,14 +123,19 @@ export default function createHostModal(props) {
       visible={props.visible}
       footer={null}
     >
+      {() => {
+        console.log(1);
+      }}
       <Spin size='large' tip='创建中...' spinning={loading}>
         <Form
+          form={form}
           {...layout}
           name='nest-messages'
           onFinish={onFinish}
+          onValuesChange={valuesChange}
           validateMessages={validateMessages}
           initialValues={{
-            hostName: '主机名随机',
+            hostName: `主机名随机${Math.floor(Math.random() * 900) + 99}`,
             ram: 8,
             netWidth: 5,
             cDisk: 20,
@@ -116,7 +148,7 @@ export default function createHostModal(props) {
             label='主机名'
             rules={[{ required: true }]}
           >
-            <Input maxLength={6} />
+            <Input maxLength={8} />
           </Form.Item>
           {/* 操作系统 */}
           <Form.Item
@@ -161,23 +193,72 @@ export default function createHostModal(props) {
           </Form.Item>
 
           {/* C盘容量 */}
-          <Form.Item name='cDisk' label='C盘容量' rules={[{ required: true }]}>
-            <Slider
-              tipFormatter={value => `${value}GB`}
-              defaultValue={30}
-              min={20}
-              tooltipPlacement='right'
-            />
+          <Form.Item
+            noStyle
+            shouldUpdate={true}
+            shouldUpdate={(prevValues, currentValues) => {
+              return prevValues.system !== currentValues.system;
+            }}
+          >
+            {({ getFieldValue }) => (
+              <Form.Item
+                name='cDisk'
+                label={
+                  getFieldValue('system') !== 'CentOS' &&
+                  getFieldValue('system') !== 'Ubuntu'
+                    ? 'C盘容量'
+                    : '磁盘容量'
+                }
+                rules={[{ required: true }]}
+              >
+                <Slider
+                  tipFormatter={value => `${value}GB`}
+                  defaultValue={30}
+                  min={20}
+                  tooltipPlacement='right'
+                />
+              </Form.Item>
+            )}
           </Form.Item>
+
           {/* D盘容量 */}
-          <Form.Item name='dDisk' label='D盘容量' rules={[{ required: true }]}>
+          <Form.Item
+            noStyle
+            shouldUpdate={true}
+            shouldUpdate={(prevValues, currentValues) => {
+              return prevValues.system !== currentValues.system;
+            }}
+          >
+            {({ getFieldValue }) => {
+              return getFieldValue('system') !== 'CentOS' &&
+                getFieldValue('system') !== 'Ubuntu' ? (
+                <Form.Item
+                  name='dDisk'
+                  label='D盘容量'
+                  rules={[
+                    {
+                      required: true
+                    }
+                  ]}
+                >
+                  <Slider
+                    tipFormatter={value => `${value}GB`}
+                    defaultValue={50}
+                    min={30}
+                    tooltipPlacement='right'
+                  />
+                </Form.Item>
+              ) : null;
+            }}
+          </Form.Item>
+          {/* <Form.Item name='dDisk' label='D盘容量' rules={[{ required: true }]}>
             <Slider
               tipFormatter={value => `${value}GB`}
               defaultValue={50}
               min={30}
               tooltipPlacement='right'
             />
-          </Form.Item>
+          </Form.Item> */}
           {/* 主机备注 */}
           <Form.Item name='desc' label='备注'>
             <Input.TextArea />

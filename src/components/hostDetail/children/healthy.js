@@ -26,7 +26,7 @@ registerShape('point', 'pointer', {
         x1: center.x,
         y1: center.y,
         x2: point.x,
-        y2: point.y + 15,
+        y2: point.y + 0,
         stroke: cfg.color,
         lineWidth: 5,
         lineCap: 'round'
@@ -45,7 +45,7 @@ registerShape('point', 'pointer', {
   }
 });
 
-const GAUGE_MAX = 9;
+const GAUGE_MAX = 100;
 const GAUGE_MIN = 0;
 
 const scale = [
@@ -53,7 +53,7 @@ const scale = [
     dataKey: 'value',
     min: GAUGE_MIN,
     max: GAUGE_MAX,
-    tickInterval: 1,
+    tickInterval: 10,
     nice: false
   }
 ];
@@ -74,18 +74,43 @@ export default class Healthy extends React.Component {
     };
   }
 
-  componentDidMount() {
-    this.setState({
-      timer: setTimeout(this.setData, 0)
-    });
-    // this.timer = setTimeout(this.setData, 0);
+  // componentDidMount() {
+  //   this.setState({
+  //     timer: setTimeout(this.setData, 0)
+  //   });
+  //   // this.timer = setTimeout(this.setData, 0);
+  // }
+
+  async UNSAFE_componentWillReceiveProps(nextProps) {
+    // console.log('nextProps', nextProps);
+    const { used, ramUsed, gpuUsed } = nextProps.cpuData;
+    const { netWidth, cDiskUsed } = this.props.hostDetail;
+    const up = 0.2;
+    const netUsed = up / (netWidth * 1024) / 8;
+    const healthy =
+      100 -
+      Math.floor(
+        ramUsed * 0.4 +
+          used * 0.26 +
+          netUsed * 0.15 +
+          cDiskUsed * 0.15 +
+          gpuUsed * 0.04
+      );
+    this.setState(
+      {
+        data: [{ value: healthy }]
+      },
+      () => {
+        // console.log(this.state);
+      }
+    );
   }
 
-  componentWillUnmount() {
-    if (this.state.timer) {
-      clearTimeout(this.state.timer);
-    }
-  }
+  // componentWillUnmount() {
+  //   if (this.state.timer) {
+  //     clearTimeout(this.state.timer);
+  //   }
+  // }
 
   setData = () => {
     if (this.state.timer) {
@@ -109,9 +134,14 @@ export default class Healthy extends React.Component {
         this.setState({ data: [{ value: nextVal }] });
       }
     }
-    this.setState({
-      timer: setTimeout(this.setData, 1000)
-    });
+    this.setState(
+      {
+        timer: setTimeout(this.setData, 1000)
+      },
+      () => {
+        // console.log(this.state);
+      }
+    );
     // this.timer = setTimeout(this.setData, 1000);
   };
 
@@ -126,19 +156,21 @@ export default class Healthy extends React.Component {
           background: 'white',
           overflow: 'hidden',
           marginTop: '12px',
-          height: '324px',
-          width: '300px',
+          height: '320px',
+          width: '250px',
           marginLeft: '12px',
           display: 'flex',
           justifyContent: 'center'
         }}
+        className={styles.healthyPlot}
       >
         <Chart
           forceFit={true}
-          width={340}
+          width={360}
           height={360}
           data={data}
           scale={scale}
+          padding={[60, 40, 60, 40]}
           animate={true}
         >
           <Coord
@@ -173,52 +205,54 @@ export default class Healthy extends React.Component {
             grid={null}
           />
           <Axis dataKey='1' show={false} />
-
+          {/* 指针 */}
           <Series
             gemo='point'
             position='value*1'
             shape='pointer'
-            color='#8C8C8C'
+            color='#0066FF'
             active={false}
           />
-
+          {/* 剩余部分圆弧进度条 */}
           <Guide
             type='arc'
             zIndex={0}
             top={false}
             start={[0, 0.945]}
-            end={[9, 0.945]}
+            end={[100, 0.945]}
             style={{
               stroke: '#CBCBCB',
               lineWidth: 10
             }}
           />
-
+          {/* 红色范围 0-50 */}
           <Guide
             type='arc'
             zIndex={1}
             start={[0, 0.945]}
-            end={[Math.max(0, Math.min(3, val)), 0.945]}
+            end={[Math.max(0, Math.min(50, val)), 0.945]}
             style={{
               stroke: color[0],
               lineWidth: 10
             }}
           />
+          {/* 黄色范围 50-80 */}
           <Guide
             type='arc'
             zIndex={1}
-            start={[3, 0.945]}
-            end={[Math.max(3, Math.min(6, val)), 0.945]}
+            start={[50, 0.945]}
+            end={[Math.max(50, Math.min(80, val)), 0.945]}
             style={{
               stroke: color[1],
               lineWidth: 10
             }}
           />
+          {/* 绿色范围 80~100 */}
           <Guide
             type='arc'
             zIndex={1}
-            start={[6, 0.945]}
-            end={[Math.max(6, Math.min(9, val)), 0.945]}
+            start={[80, 0.945]}
+            end={[Math.max(80, Math.min(100, val)), 0.945]}
             style={{
               stroke: color[2],
               lineWidth: 10
@@ -231,9 +265,7 @@ export default class Healthy extends React.Component {
             html={`
               <div style="width: 350px;text-align: center;">
                 <p style="font-size: 20px; color: #545454;margin: 0;">健康值</p>
-                <p style="font-size: 36px;color: #545454;margin: 0;">${Math.ceil(
-                  val * 10
-                )}%</p>
+                <p style="font-size: 36px;color: #545454;margin: 0;">${val}%</p>
               </div>
             `}
           />

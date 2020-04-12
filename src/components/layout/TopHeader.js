@@ -117,14 +117,11 @@ class TopHeader extends Component {
           <MenuUnfoldOutlined className='trigger' onClick={this.toggle} />
 
           <div className={`${styles.top} header-title`}>
-            {/* React-antd-admin 通用后台管理系统 */}
-            <span>IP:127.0.0.1</span>
-            <span>节点:浙江杭州</span>
-            <span>
-              <WindowsOutlined />
-              系统: Windows Server 2008 R2 Datacenter (build 7601) x64
-            </span>
-            <span>已不间断运行:6天23小时7分钟</span>
+            <span>目前共有虚拟主机【16】台</span>
+            <span>正常运行【10】台</span>
+            <span>关机【5】台</span>
+            <span>告警【1】台</span>
+            <span>大规模虚拟集群管理系统运行状态良好~</span>
           </div>
           <div className='header-right'>
             <div className='full-screen'>

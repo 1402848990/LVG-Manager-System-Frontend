@@ -1,0 +1,15 @@
+.screen-warn-log {
+  color: aliceblue !important;
+  height: 85%;
+  max-width: 98%;
+  padding-left: 2%;
+  padding-right: 1%;
+  border-radius: 4px;
+  overflow: auto;
+}
+.demo-loading-container {
+  position: absolute;
+  bottom: 40px;
+  width: 100%;
+  text-align: center;
+}

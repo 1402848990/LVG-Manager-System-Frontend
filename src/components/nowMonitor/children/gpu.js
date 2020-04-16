@@ -16,6 +16,7 @@ class Cpu extends React.Component {
       <div className={styles.plotList}>
         {/* GPU监控 */}
         <AreaChart
+          loading={!this.props.cpuData}
           data={this.props.cpuData}
           padding='auto'
           title={{

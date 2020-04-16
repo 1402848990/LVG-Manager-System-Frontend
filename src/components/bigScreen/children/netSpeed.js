@@ -18,7 +18,9 @@ import moment from 'moment';
 
 export default class NetSpeed extends React.Component {
   state = {
-    data: []
+    data: [],
+    up: '',
+    down: ''
   };
 
   scale = [
@@ -37,51 +39,13 @@ export default class NetSpeed extends React.Component {
       dataKey: 'speed',
       alias: '网络速率',
       min: 0,
-      max: 5000
-      // this.props &&
-      // this.props.hostDetail &&
-      // this.props.hostDetail.netWidth * 1024
+      max: 3000
     },
     {
       dataKey: 'type',
       type: 'cat'
     }
   ];
-
-  updateData = () => {
-    const me = this;
-    const now = new Date();
-    const time = now.getTime();
-    const temperature1 = ~~(Math.random() * 20) + 22;
-    const temperature2 = ~~(Math.random() * 50) + 17;
-    let newData = me.state.data.slice();
-    if (newData.length >= 20) {
-      newData.shift();
-      newData.shift();
-    }
-    newData.push({
-      time: time,
-      speed: temperature1,
-      type: '上行'
-    });
-    newData.push({
-      time: time,
-      speed: temperature2,
-      type: '下行'
-    });
-    me.setState(
-      {
-        data: newData
-      },
-      () => {
-        // console.log(this.state);
-      }
-    );
-  };
-
-  // componentDidMount() {
-  //   setInterval(this.updateData, 3000);
-  // }
 
   // 处理网络监控数据
   handleNetData = async data => {
@@ -97,21 +61,14 @@ export default class NetSpeed extends React.Component {
     }
     // 新数据追加到旧数据中
     newData.map(x => {
+      x.type === '上行'
+        ? this.props.setUp(x.speed)
+        : this.props.setDown(x.speed);
       oldData.push(x);
     });
-    await this.setState(
-      {
-        data: oldData
-      },
-      () => {
-        // console.log(this.state);
-      }
-    );
-
-    // NET数据存入state中
-    // await this.setState({
-    //   netData: (data && !data.includes('连接成功') && JSON.parse(data)) || {}
-    // });
+    await this.setState({
+      data: oldData
+    });
   };
 
   render() {

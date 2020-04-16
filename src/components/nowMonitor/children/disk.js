@@ -1,8 +1,8 @@
 import React from 'react';
-import { AreaChart } from 'bizcharts-plot';
+import { LineChart } from 'bizcharts-plot';
 import styles from '../index.scss';
 
-class Ram extends React.Component {
+class Disk extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -13,20 +13,20 @@ class Ram extends React.Component {
   render() {
     return (
       <div className={styles.plotList}>
-        {/* 网络监控 */}
-        <AreaChart
-          // loading={!this.props.netData}
-          data={this.props.netData}
+        {/* 磁盘 */}
+        <LineChart
+          loading={!this.props.diskData}
+          data={this.props.diskData}
           padding='auto'
           title={{
-            text: '网络上行下行速度历史监控'
+            text: '磁盘读写数据历史监控'
           }}
           description={{
-            text: '本监控为此主机网络使用率历史数据'
+            text: '本监控为此主机磁盘读写速度历史数据'
           }}
           xField='createdAt'
           yField='speed'
-          stackField='type'
+          seriesField='type'
           xAxis={{
             visible: true,
             label: {
@@ -44,9 +44,8 @@ class Ram extends React.Component {
           //   stroke: 'red'
           // }}
           // 动画
-          animate={true}
           animation={{
-            update: 'fadeIn'
+            type: 'clipingWithData'
           }}
           smooth
           slider={{}}
@@ -58,4 +57,4 @@ class Ram extends React.Component {
   }
 }
 
-export default Ram;
+export default Disk;

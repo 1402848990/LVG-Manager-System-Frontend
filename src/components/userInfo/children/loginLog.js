@@ -48,7 +48,7 @@ export default class LoginLog extends React.Component {
     this.setState({
       loading: true
     });
-    if (data.length > 6) {
+    if (data.length > 0) {
       message.warning('正在加载...');
       this.setState({
         hasMore: false,
@@ -69,7 +69,7 @@ export default class LoginLog extends React.Component {
       data,
       loading: false
     });
-    console.log('res----2', res);
+    // console.log('res----2', res);
   };
 
   render() {

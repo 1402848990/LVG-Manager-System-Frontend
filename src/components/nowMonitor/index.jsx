@@ -1,8 +1,9 @@
 /**
- * 全部监控页
+ * 全部历史监控页
  */
 import React from 'react';
 import PoltList from './children/poltList';
+import { withRouter } from 'react-router-dom';
 import styles from './index.scss';
 
 class IndexPage extends React.Component {
@@ -14,10 +15,10 @@ class IndexPage extends React.Component {
   render() {
     return (
       <div className={styles.nowMonitor}>
-        <PoltList />
+        <PoltList hid={this.props.match.params.hid || 41} />
       </div>
     );
   }
 }
 
-export default IndexPage;
+export default withRouter(IndexPage);

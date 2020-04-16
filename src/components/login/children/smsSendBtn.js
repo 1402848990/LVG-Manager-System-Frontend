@@ -10,7 +10,7 @@ import axios from '../../../request/axiosConfig';
 import api from '../../../request/api/api_sms';
 
 const Btn1 = props => {
-  const { phone } = props;
+  const { phone, way } = props;
   const [restTime, resetCountdown] = useCountDown('cnt1', {
     total: 10,
     lifecycle: 'session'
@@ -21,12 +21,17 @@ const Btn1 = props => {
    */
   const sendCode = async () => {
     console.log('send code', phone);
+    // 如果手机号码有问题
+    if (!/^1[3456789]\d{9}$/.test(phone)) {
+      message.error('手机号码有误！');
+      return;
+    }
     const res = await axios({
       url: api.sendSmsCheckCode,
       method: 'post',
       data: {
         phone,
-        way: 'register'
+        way
       }
     });
     const { data: { success } = {} } = res;
@@ -52,11 +57,11 @@ const Btn1 = props => {
 };
 
 export default function App(props) {
-  const { phone } = props;
+  const { phone, way } = props;
   // console.log('props', props);
   return (
     <>
-      <Btn1 phone={phone} />
+      <Btn1 phone={phone} way={way} />
     </>
   );
 }

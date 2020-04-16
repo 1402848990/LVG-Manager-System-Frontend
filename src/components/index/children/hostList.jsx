@@ -85,7 +85,10 @@ class HostList extends React.Component {
         />
         <List
           style={{ paddingTop: '20px', backgroundColor: '#f1f2f7' }}
-          loading={!(cpuData.length > 0 && netData.length > 0)}
+          loading={{
+            spinning: !(cpuData.length > 0 && netData.length > 0),
+            tip: '主机列表加载中'
+          }}
           bordered={true}
           dataSource={this.props.allHost}
           grid={{ gutter: 2, column: 2 }}

@@ -241,6 +241,13 @@ class IndexPage extends React.Component {
     });
   };
 
+  // 刷新操作日志
+  refreshOperationLogs = () => {
+    console.log(1);
+
+    this.operationLogs.current.getOperationLogs();
+  };
+
   render() {
     const { visible, allHost, loading } = this.state;
     const columns = [
@@ -331,6 +338,7 @@ class IndexPage extends React.Component {
           )
       }
     ];
+
     return (
       <div className={styles.hostList}>
         <div>
@@ -340,19 +348,22 @@ class IndexPage extends React.Component {
             visible={visible}
             closeModal={this.closeModal}
             getAllHost={this.getAllHost}
+            refreshOperationLogs={this.refreshOperationLogs}
           />
           <Button
             onClick={this.openOrCloseBatch.bind(this, 'close')}
             className={styles.batchButton}
-            type='primary'
+            // type='primary'
+            disabled={this.state.selected.length === 0}
           >
             批量关机
           </Button>
           <Button
             onClick={this.openOrCloseBatch.bind(this, 'open')}
-            style={{ backgroundColor: '#20a53a' }}
+            // style={{ backgroundColor: '#20a53a' }}
             className={styles.batchButton}
             type='primary'
+            disabled={this.state.selected.length === 0}
           >
             批量开机
           </Button>
@@ -374,6 +385,7 @@ class IndexPage extends React.Component {
             danger
             className={styles.batchButton}
             type='primary'
+            disabled={this.state.selected.length === 0}
           >
             批量删除
           </Button>

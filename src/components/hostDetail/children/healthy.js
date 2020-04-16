@@ -157,7 +157,7 @@ export default class Healthy extends React.Component {
           overflow: 'hidden',
           marginTop: '12px',
           height: '320px',
-          width: '250px',
+          width: '35%',
           marginLeft: '12px',
           display: 'flex',
           justifyContent: 'center'

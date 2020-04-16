@@ -64,7 +64,7 @@ class Login extends React.Component {
             message={message}
           />
         ) : null}
-        <img src={require('../../images/right-top.png')} alt='' />
+        <img src={require('@/assets/images/right-top.png')} alt='' />
         <div
           style={{ height: key === '3' ? '500px' : '' }}
           className={styles.content}

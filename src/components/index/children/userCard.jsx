@@ -1,8 +1,9 @@
 import React from 'react';
 import styles from '../index.scss';
 import { UserOutlined } from '@ant-design/icons';
+import { withRouter } from 'react-router-dom';
 import ICON from '@/assets/icon';
-import { Progress } from 'antd';
+import { Progress, Spin } from 'antd';
 import axios from '@/request/axiosConfig';
 import api_user from '@/request/api/api_user';
 import api_host from '@/request/api/api_host';
@@ -27,11 +28,12 @@ class UserCard extends React.Component {
   }
 
   /**
-   * 获取用户信息
+   * 获取用户登录信息
    */
   getUserInfo = async () => {
     const { userInfo } = localStorage;
     const id = userInfo ? JSON.parse(userInfo).id : null;
+    const userName = userInfo ? JSON.parse(userInfo).userName : '';
     const res = await axios({
       url: api_user.loginLog,
       method: 'post',
@@ -42,7 +44,8 @@ class UserCard extends React.Component {
     // 用户登录日志存到state中
     await this.setState({
       loginLog: res.data.data,
-      thisLoginDate: res.data.data[0].createdAt
+      thisLoginDate: res.data.data[0].createdAt,
+      userName
     });
     // const { ip, address, createdAt, total } = res.data.data;
   };
@@ -62,12 +65,20 @@ class UserCard extends React.Component {
 
   render() {
     const { ip, address, createdAt } =
-      this.state.loginLog.length > 0 ? this.state.loginLog[1] : {};
+      this.state.loginLog.length > 1 ? this.state.loginLog[1] : {};
     return (
       <div className={styles.infoWarp}>
         <div className={styles.top}>
           <div className={styles.left}>
-            <h2>Hi,王锐~</h2>
+            <h2>
+              <a
+                onClick={() => {
+                  this.props.history.push('/userInfo');
+                }}
+              >
+                Hi,{this.state.userName}~
+              </a>
+            </h2>
             <h3>初次见面，请多关照~</h3>
           </div>
           <div
@@ -97,8 +108,7 @@ class UserCard extends React.Component {
               status='active'
               strokeWidth={4}
               strokeColor='#FF981D'
-              trailColor='#FF981D'
-              percent={10}
+              percent={100}
               format={percent => (
                 <span style={{ fontSize: '28px' }} className={styles.format}>
                   {this.state.hh}
@@ -147,4 +157,4 @@ class UserCard extends React.Component {
   }
 }
 
-export default UserCard;
+export default withRouter(UserCard);

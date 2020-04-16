@@ -99,11 +99,11 @@ class TopHeader extends Component {
           <IdcardOutlined />
           个人资料
         </Menu.Item>
-        <Menu.Item key='user'>
+        {/* <Menu.Item key='user'>
           <UserOutlined />
           {Object.keys(this.props.userInfo).length > 0 &&
             this.props.userInfo.role.name}
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Item key='logout' onClick={this.handleLogout}>
           <LogoutOutlined />
           退出登录
@@ -117,10 +117,10 @@ class TopHeader extends Component {
           <MenuUnfoldOutlined className='trigger' onClick={this.toggle} />
 
           <div className={`${styles.top} header-title`}>
-            <span>目前共有虚拟主机【16】台</span>
-            <span>正常运行【10】台</span>
-            <span>关机【5】台</span>
-            <span>告警【1】台</span>
+            <span>
+              Hi&nbsp;
+              {JSON.parse(localStorage.getItem('userInfo')).userName || ''}~
+            </span>
             <span>大规模虚拟集群管理系统运行状态良好~</span>
           </div>
           <div className='header-right'>
@@ -134,7 +134,7 @@ class TopHeader extends Component {
               />
             </div>
             <div className='news-wrap'>
-              <Badge count={12}>
+              <Badge>
                 <BellOutlined
                   style={{ fontSize: '20px', cursor: 'pointer' }}
                   onClick={this.toNews}

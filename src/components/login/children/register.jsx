@@ -153,7 +153,7 @@ export default class Register extends React.Component {
               type='number'
               placeholder='验证码'
             />
-            <SmsSendBtn phone={phone} />
+            <SmsSendBtn phone={phone} way='register' />
           </div>
           <Button
             className={styles.submit}

@@ -5,6 +5,7 @@ import React from 'react';
 import { WindowsOutlined } from '@ant-design/icons';
 import axios from '@/request/axiosConfig';
 import api_host from '@/request/api/api_host';
+import { withRouter } from 'react-router-dom';
 import { Progress, Button } from 'antd';
 import styles from '../index.scss';
 
@@ -32,8 +33,22 @@ class Status extends React.Component {
         <div className={styles.title}>
           状态
           <Group style={{ borderRadius: '10px', marginLeft: '12px' }}>
-            <Button type='primary'>实时监控</Button>
-            <Button type='primary'>大屏监控</Button>
+            <Button
+              onClick={() => {
+                this.props.history.push(`/nowMonitor/${this.props.hid}`);
+              }}
+              type='primary'
+            >
+              历史监控
+            </Button>
+            <Button
+              onClick={() => {
+                this.props.history.push(`/bigScreen/${this.props.hid}`);
+              }}
+              type='primary'
+            >
+              数据大屏监控
+            </Button>
           </Group>
         </div>
         <div className={styles.pargrams}>
@@ -84,7 +99,7 @@ class Status extends React.Component {
               width={100}
             />
             <h3>
-              {cDiskUsed * 0.01 * cDisk} GB/{cDisk} GB
+              {(cDiskUsed * 0.01 * cDisk).toFixed(2)} GB/{cDisk} GB
             </h3>
           </div>
           <div className={styles.progress}>
@@ -101,7 +116,7 @@ class Status extends React.Component {
               width={100}
             />
             <h3>
-              {dDiskUsed || 0.2 * dDisk} GB/{dDisk} GB
+              {(dDiskUsed || 0.2 * dDisk).toFixed(2)} GB/{dDisk} GB
             </h3>
           </div>
         </div>
@@ -110,4 +125,4 @@ class Status extends React.Component {
   }
 }
 
-export default Status;
+export default withRouter(Status);

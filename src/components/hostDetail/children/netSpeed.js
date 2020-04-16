@@ -26,21 +26,17 @@ export default class NetSpeed extends React.Component {
       dataKey: 'time',
       alias: '时间',
       type: 'timeCat',
-      // mask: 'MM:ss',
       formatter: data => moment(data).format('HH:mm:ss'),
       nice: false,
       range: [0, 1],
-      tickCount: 6,
-      tickInterval: 1
+      tickCount: 6
     },
     {
       dataKey: 'speed',
       alias: '网络速率',
       min: 0,
-      max: 5000
-      // this.props &&
-      // this.props.hostDetail &&
-      // this.props.hostDetail.netWidth * 1024
+      max: 3000,
+      tickCount: 10
     },
     {
       dataKey: 'type',
@@ -69,29 +65,18 @@ export default class NetSpeed extends React.Component {
       speed: temperature2,
       type: '下行'
     });
-    me.setState(
-      {
-        data: newData
-      },
-      () => {
-        // console.log(this.state);
-      }
-    );
+    me.setState({
+      data: newData
+    });
   };
-
-  // componentDidMount() {
-  //   setInterval(this.updateData, 3000);
-  // }
 
   // 处理网络监控数据
   handleNetData = async data => {
-    // console.log('data', data);
-    const nextData = [];
     const oldData = this.state.data.slice();
     const newData =
       (data && !data.includes('连接成功') && JSON.parse(data)) || [];
-    // 如果state中的数据大于七条去掉多余数据
-    if (oldData.length > 14) {
+    // 如果state中的数据大于30条去掉多余数据
+    if (oldData.length > 30) {
       oldData.shift();
       oldData.shift();
     }
@@ -99,19 +84,9 @@ export default class NetSpeed extends React.Component {
     newData.map(x => {
       oldData.push(x);
     });
-    await this.setState(
-      {
-        data: oldData
-      },
-      () => {
-        // console.log(this.state);
-      }
-    );
-
-    // NET数据存入state中
-    // await this.setState({
-    //   netData: (data && !data.includes('连接成功') && JSON.parse(data)) || {}
-    // });
+    await this.setState({
+      data: oldData
+    });
   };
 
   render() {
@@ -135,17 +110,24 @@ export default class NetSpeed extends React.Component {
         >
           <Tooltip />
           <Axis autoPaint={true} />
-          <Legend allowAllCanceled={true} />
+          <Legend
+            position='top-center'
+            show={true}
+            dataKey='type'
+            allowAllCanceled={true}
+          />
           <Line
             position='time*speed'
             color={['type', ['#ff7f0e', '#2ca02c']]}
             shape='smooth'
           />
           <Series
+            type='point'
             adjust='stack'
             position='speed*1'
             shape='smooth'
             quickType='area'
+            point
           />
         </Chart>
       </div>

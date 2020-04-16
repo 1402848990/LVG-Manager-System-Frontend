@@ -21,7 +21,6 @@ class IndexPage extends React.Component {
 
   async componentDidMount() {
     await this.getHostDetail();
-    console.log('props---', this.props);
   }
 
   // 根据hid获取主机详情
@@ -41,14 +40,9 @@ class IndexPage extends React.Component {
 
   handleCpuData = async data => {
     // cpu数据存入state中
-    await this.setState(
-      {
-        cpuData: (data && !data.includes('连接成功') && JSON.parse(data)) || {}
-      }
-      // () => {
-      //   console.log('state', this.state);
-      // }
-    );
+    await this.setState({
+      cpuData: (data && !data.includes('连接成功') && JSON.parse(data)) || {}
+    });
   };
 
   handleNetData = async data => {
@@ -62,7 +56,6 @@ class IndexPage extends React.Component {
     const { hid, hostDetail, cpuData } = this.state;
     const urlCpu = `ws://localhost:8088/CpuWsOne/hid=${hid}`;
     return (
-      // <div className='shadow-radius'>
       <div className={styles.hostDetail}>
         <Websocket
           url={urlCpu}
@@ -70,16 +63,7 @@ class IndexPage extends React.Component {
           reconnectIntervalInMilliSeconds={10000}
           sendMessage='111'
           ref={this.ws}
-          // onOpen={() => {
-          //   this.ws.current.sendMessage('ok');
-          // }}
         />
-        {/* <Websocket
-          url='ws://localhost:8088/NetWs'
-          onMessage={this.handleNetData}
-          reconnectIntervalInMilliSeconds={10000}
-          sendMessage='net'
-        /> */}
         {/* 顶部状态图表 */}
         <Status cpuData={cpuData} hid={hid} hostDetail={hostDetail} />
         <HostDesc cpuData={cpuData} hid={hid} hostDetail={hostDetail} />

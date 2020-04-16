@@ -76,7 +76,8 @@ class HostDesc extends React.Component {
         info: {
           uid,
           type,
-          hids
+          hids,
+          log
         }
       }
     });
@@ -92,7 +93,7 @@ class HostDesc extends React.Component {
   // 关闭warnModal
   closeWarnModal = () => {
     this.setState({
-      warnModalVisible: false
+      warnVisible: false
     });
   };
 
@@ -122,9 +123,9 @@ class HostDesc extends React.Component {
         {/* 预警设置Modal */}
         <EditWarn
           hid={this.props.hid}
-          warnModalVisible={this.state.warnModalVisible}
+          warnVisible={this.state.warnVisible}
           closeWarnModal={this.closeWarnModal}
-          hostDetail={this.props.hostDetail}
+          saveOperation={this.saveOperation}
         />
         <div className={styles.left}>
           {/* 电脑SVG图标 */}
@@ -164,7 +165,7 @@ class HostDesc extends React.Component {
               <Button
                 onClick={() => {
                   this.setState({
-                    warnModalVisible: true
+                    warnVisible: true
                   });
                 }}
                 size='large'
@@ -207,10 +208,6 @@ class HostDesc extends React.Component {
             </p>
             <p>
               <LockOutlined />
-              <span>密码： password</span>
-            </p>
-            <p>
-              <LockOutlined />
               <span>
                 开机时间：{moment(openAt).format('YYYY-MM-DD HH:mm:ss')}
               </span>
@@ -227,6 +224,9 @@ class HostDesc extends React.Component {
                 创建时间：{moment(createdAt).format('YYYY-MM-DD HH:mm:ss')}
               </span>
             </p>
+            <p> &nbsp;</p>
+            <p> &nbsp;</p>
+            <p> &nbsp;</p>
           </div>
         </div>
         <div className={styles.right}></div>

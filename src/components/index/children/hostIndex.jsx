@@ -4,7 +4,7 @@
 import React from 'react';
 import styles from '../index.scss';
 import Websocket from 'react-websocket';
-import { Progress } from 'antd';
+import { Spin } from 'antd';
 import { Scatter } from '@antv/g2plot';
 
 let cpu = 0;
@@ -17,17 +17,7 @@ class HostIndex extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [
-        // { healthy: '100', hostNum: 30, type: 'perfect' },
-        // { healthy: '90', hostNum: 40, type: 'perfect' },
-        // { healthy: '70', hostNum: 30, type: 'warn' },
-        // { healthy: '70', hostNum: 50, type: 'warn' },
-        // { healthy: '60', hostNum: 40, type: 'warn' },
-        // { healthy: '70', hostNum: 60, type: 'warn' },
-        // { healthy: '30', hostNum: 70, type: 'error' },
-        // { healthy: '10', hostNum: 90, type: 'error' },
-        // { healthy: '23', hostNum: 50, type: 'error' }
-      ],
+      data: [],
       cpuData: [],
       netData: [],
       scatterPlot: null
@@ -52,14 +42,6 @@ class HostIndex extends React.Component {
           ? '#FF981D'
           : 'red';
       },
-      // title: {
-      //   visible: false,
-      //   text: '实时虚拟机-健康状态分布图',
-      //   style: {
-      //     fontSize: 12,
-      //     fill: 'black'
-      //   }
-      // },
       meta: {
         hostNum: {
           alias: '台',
@@ -95,20 +77,15 @@ class HostIndex extends React.Component {
   }
 
   handleCpuData = async data => {
-    // console.log('data', data);
-    // cpu数据存入state中
+    // 基础数据存入state中
     await this.setState(
       {
         cpuData: (data && !data.includes('连接成功') && JSON.parse(data)) || {}
       }
-      // () => {
-      //   console.log('state', this.state);
-      // }
     );
   };
 
   handleNetData = async data => {
-    // console.log('data', data);
     // NET数据存入state中
     await this.setState(
       {
@@ -120,7 +97,7 @@ class HostIndex extends React.Component {
     );
   };
 
-  // 查找重复元素及其个数
+  // 查找重复健康值及其个数
   countNum = arr => {
     const _res = [];
     arr.sort();
@@ -161,7 +138,6 @@ class HostIndex extends React.Component {
           }
         });
       }
-
       const netUsed = up / (netWidth * 1024) / 8;
       const healthy =
         100 -
@@ -184,17 +160,10 @@ class HostIndex extends React.Component {
         type: item[0] > 80 ? 'perfect' : item[0] > 60 ? 'warn' : 'error'
       };
     });
-
-    // console.log('data', data);
-
-    // await this.setState({
-    //   data
-    // });
     this.state.scatterPlot.changeData(data);
   };
 
   render() {
-    // this.refresh();
     return (
       <div className={styles.hostIndex}>
         <Websocket
@@ -203,9 +172,6 @@ class HostIndex extends React.Component {
           reconnectIntervalInMilliSeconds={10000}
           sendMessage='111'
           ref={this.ws}
-          // onOpen={() => {
-          //   this.ws.current.sendMessage('ok');
-          // }}
         />
         <Websocket
           url='ws://localhost:8088/NetWs'
@@ -213,7 +179,12 @@ class HostIndex extends React.Component {
           reconnectIntervalInMilliSeconds={10000}
           sendMessage='net'
         />
-        <div style={{ top: '5px' }} ref={this.container} id='container'></div>
+        <Spin
+          spinning={this.state.cpuData.length === 0}
+          tip='主机健康值分布加载中...'
+        >
+          <div style={{ top: '5px' }} ref={this.container} id='container'></div>
+        </Spin>
       </div>
     );
   }

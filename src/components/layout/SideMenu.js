@@ -86,7 +86,7 @@ class SideNenu extends Component {
           className='logo'
           style={{ color: type === 'dark' ? '#ffffffa6' : '' }}
         >
-          Logo
+          Welcome
         </div>
         <Menu
           style={{ height: '50px' }}

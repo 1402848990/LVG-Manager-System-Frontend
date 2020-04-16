@@ -2,7 +2,10 @@ import React from 'react';
 import styles from '../index.scss';
 import { List, message, Avatar, Spin, Divider } from 'antd';
 import IconFont from '@/assets/icon';
+import axios from '@/request/axiosConfig';
+import api_logs from '@/request/api/api_logs';
 import reqwest from 'reqwest';
+import moment from 'moment';
 import './warnLog.css';
 
 import InfiniteScroll from 'react-infinite-scroller';
@@ -18,44 +21,42 @@ export default class WarnLog extends React.Component {
   };
 
   componentDidMount() {
-    this.fetchData(res => {
-      this.setState({
-        data: res.results
-      });
-    });
+    this.getWarnLog();
+    // this.fetchData(res => {
+    //   this.setState({
+    //     data: res.results
+    //   });
+    // });
   }
 
-  fetchData = callback => {
-    reqwest({
-      url: fakeDataUrl,
-      type: 'json',
-      method: 'get',
-      contentType: 'application/json',
-      success: res => {
-        callback(res);
+  // 获取预警日志
+  getWarnLog = async () => {
+    const { userInfo } = localStorage;
+    const { id: uid } = userInfo ? JSON.parse(userInfo) : {};
+    const res = await axios({
+      url: api_logs.getWarnLogs,
+      method: 'post',
+      data: {
+        hid: this.props.hid
       }
     });
+    // 用户登录日志存到state中
+    await this.setState({
+      warnLog: res.data.data
+    });
+    console.log(this.state);
+
+    // const { ip, address, createdAt, total } = res.data.data;
   };
 
-  handleInfiniteOnLoad = () => {
+  handleInfiniteOnLoad = async () => {
     let { data } = this.state;
     this.setState({
       loading: true
     });
-    if (data.length > 14) {
-      message.warning('Infinite List loaded all');
-      this.setState({
-        hasMore: false,
-        loading: false
-      });
-      return;
-    }
-    this.fetchData(res => {
-      data = data.concat(res.results);
-      this.setState({
-        data,
-        loading: false
-      });
+    await this.getWarnLog();
+    this.setState({
+      loading: false
     });
   };
 
@@ -70,16 +71,22 @@ export default class WarnLog extends React.Component {
           useWindow={false}
         >
           <List
-            dataSource={this.state.data}
+            dataSource={this.state.warnLog}
             renderItem={item => (
               <List.Item style={{ padding: '4px 0' }} key={item.id}>
                 <List.Item.Meta
-                  title={<span style={{ color: 'white' }}>CPU使用率预警</span>}
+                  title={<span style={{ color: 'white' }}>{item.type}</span>}
                   description={
-                    <span style={{ color: 'white' }}>触发值为：90%</span>
+                    <span style={{ color: 'white' }}>{`预警条件:${
+                      item.settingValue
+                    }%；触发值：${item.warnValue}${
+                      item.type === '网络占用率预警' ? 'KB/S' : '%'
+                    }`}</span>
                   }
                 />
-                <div style={{ color: 'white' }}>04-10 16:20:13</div>
+                <div style={{ color: 'white' }}>
+                  {moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
+                </div>
               </List.Item>
             )}
           >

@@ -16,6 +16,7 @@ class Ram extends React.Component {
       <div className={styles.plotList}>
         {/* 内存监控 */}
         <LineChart
+          loading={!this.props.cpuData}
           data={this.props.cpuData}
           padding='auto'
           title={{

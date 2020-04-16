@@ -4,6 +4,7 @@
 import React from 'react';
 import { Card, Avatar, Button, Input } from 'antd';
 import { UserOutlined, EditOutlined } from '@ant-design/icons';
+import EditPassWord from './children/editPassWord';
 import axios from '@/request/axiosConfig';
 import api from '@/request/api/api_user';
 import LoginLog from './children/loginLog';
@@ -16,7 +17,8 @@ class UserInfo extends React.Component {
     this.state = {
       userInfo: {},
       changeName: '',
-      nameEdit: false
+      nameEdit: false,
+      visible: false
     };
   }
 
@@ -47,6 +49,13 @@ class UserInfo extends React.Component {
     });
   };
 
+  // 修改备注
+  editRemark = async () => {
+    await this.setState({
+      remarkEdit: true
+    });
+  };
+
   // 名字修改失去焦点
   handleNameBlur = async () => {
     console.log('失去焦点');
@@ -66,6 +75,25 @@ class UserInfo extends React.Component {
     await this.getUserInfo();
   };
 
+  // 备注修改失去焦点
+  handleRemarkBlur = async () => {
+    console.log('失去焦点');
+    await axios({
+      url: api.editUserInfo,
+      method: 'post',
+      data: {
+        changeData: {
+          remark: this.state.changeRemark
+        },
+        id: this.state.userInfo.id
+      }
+    });
+    await this.setState({
+      remarkEdit: false
+    });
+    await this.getUserInfo();
+  };
+
   handlePicChange = e => {
     e.persist();
     console.log(e);
@@ -78,11 +106,20 @@ class UserInfo extends React.Component {
       createdAt,
       updatedAt,
       version,
-      id
+      id,
+      remark
     } = this.state.userInfo;
     return (
       <div className='shadow-radius'>
-        {' '}
+        {/* 修改密码Modal */}
+        <EditPassWord
+          id={id}
+          phone={phone}
+          visible={this.state.visible}
+          close={() => {
+            this.setState({ visible: false });
+          }}
+        />
         <Card title='基本资料'>
           <div className={styles.userInfo}>
             <div className={styles.avatar}>
@@ -135,18 +172,43 @@ class UserInfo extends React.Component {
               <div>
                 <p>{id}</p>
                 <p>
-                  {' '}
+                  {this.state.remarkEdit ? (
+                    <Input
+                      onBlur={this.handleRemarkBlur}
+                      onChange={value => {
+                        value.persist();
+                        this.setState({
+                          changeRemark: value.target.value
+                        });
+                        console.log('value', value);
+                      }}
+                      maxLength={100}
+                      style={{ width: '200px' }}
+                      size='small'
+                      defaultValue={remark}
+                      value={this.state.changeRemark}
+                    />
+                  ) : (
+                    remark
+                  )}
                   <EditOutlined
                     onClick={this.editRemark}
                     style={{
-                      fontSize: '16px',
+                      marginLeft: '16px',
                       color: '#1890ff',
                       cursor: 'pointer'
                     }}
                   />
                 </p>
                 <p>
-                  <Button type='primary' size='small' ghost>
+                  <Button
+                    type='primary'
+                    size='small'
+                    onClick={() => {
+                      this.setState({ visible: true });
+                    }}
+                    ghost
+                  >
                     修改
                   </Button>
                 </p>

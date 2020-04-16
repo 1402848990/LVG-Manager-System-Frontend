@@ -16,6 +16,7 @@ class Cpu extends React.Component {
       <div className={styles.plotList}>
         {/* CPU监控 */}
         <AreaChart
+          loading={!this.props.cpuData}
           data={this.props.cpuData}
           padding='auto'
           title={{
@@ -30,6 +31,7 @@ class Cpu extends React.Component {
           xField='createdAt'
           yField='used'
           xAxis={{
+            nice: true,
             visible: true,
             label: {
               autoHide: true

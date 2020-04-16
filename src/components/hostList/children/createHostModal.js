@@ -101,7 +101,7 @@ export default function createHostModal(props) {
     if (res.data.success) {
       // 操作日志写入
       const { id: uid } = JSON.parse(localStorage.getItem('userInfo'));
-      props.saveOperation(uid, '创建', JSON.stringify([res.data.id]));
+      await props.saveOperation(uid, '创建', JSON.stringify([res.data.id]));
     }
     console.log('res', res);
 
@@ -113,6 +113,7 @@ export default function createHostModal(props) {
     props.closeModal();
     message.success(`主机：${values.hostName}，创建成功！`);
     props.getAllHost(); // 刷新数据
+    props.refreshOperationLogs(); // 刷新操作日志
   };
 
   return (
@@ -123,9 +124,6 @@ export default function createHostModal(props) {
       visible={props.visible}
       footer={null}
     >
-      {() => {
-        console.log(1);
-      }}
       <Spin size='large' tip='创建中...' spinning={loading}>
         <Form
           form={form}
@@ -135,7 +133,7 @@ export default function createHostModal(props) {
           onValuesChange={valuesChange}
           validateMessages={validateMessages}
           initialValues={{
-            hostName: `主机名随机${Math.floor(Math.random() * 900) + 99}`,
+            hostName: `主机随机${Math.floor(Math.random() * 900) + 99}`,
             ram: 8,
             netWidth: 5,
             cDisk: 20,
@@ -148,7 +146,7 @@ export default function createHostModal(props) {
             label='主机名'
             rules={[{ required: true }]}
           >
-            <Input maxLength={8} />
+            <Input maxLength={7} />
           </Form.Item>
           {/* 操作系统 */}
           <Form.Item
@@ -251,14 +249,6 @@ export default function createHostModal(props) {
               ) : null;
             }}
           </Form.Item>
-          {/* <Form.Item name='dDisk' label='D盘容量' rules={[{ required: true }]}>
-            <Slider
-              tipFormatter={value => `${value}GB`}
-              defaultValue={50}
-              min={30}
-              tooltipPlacement='right'
-            />
-          </Form.Item> */}
           {/* 主机备注 */}
           <Form.Item name='desc' label='备注'>
             <Input.TextArea />

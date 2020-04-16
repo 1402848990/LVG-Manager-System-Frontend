@@ -8,6 +8,7 @@ import axios from '../../../request/axiosConfig';
 import api from '../../../request/api/api_user';
 import api_sms from '../../../request/api/api_sms';
 import { withRouter } from 'react-router-dom';
+import { getIPandAddress } from '../../../utils';
 
 class Phone extends React.Component {
   constructor(props) {
@@ -42,22 +43,46 @@ class Phone extends React.Component {
     }
 
     // 登录请求
+    const { cip, cname } = await getIPandAddress();
     const res = await axios({
       url: api.login,
       method: 'post',
       data: {
-        phone
+        phone,
+        ip: cip,
+        address: cname
       }
     });
     console.log('res', res);
 
     const { data } = res;
     if (!data.success) {
-      this.props.handleAlert(true, data.message);
+      message.error(data.message);
       return;
     } else {
+      localStorage.setItem('isLogin', '1');
+      // 用户信息存入store中
+      // this.props.setUserInfo(
+      //   Object.assign(
+      //     {},
+      //     { userName: data.userName, id: data.id },
+      //     { isLogin: 1 },
+      //     { role: { type: 1, name: '超级管理员' } }
+      //   )
+      // );
+      // 用户信息存localStorage中
+      localStorage.setItem(
+        'userInfo',
+        JSON.stringify(
+          Object.assign(
+            {},
+            { userName: data.userName, id: data.id },
+            { role: { type: 1, name: '超级管理员' } }
+          )
+        )
+      );
       // 登录成功跳转首页
-      message.success(data.message, 1, onclose).then(() => {
+      message.success(data.message).then(() => {
         this.props.history.push('/index');
       });
     }
@@ -117,7 +142,7 @@ class Phone extends React.Component {
               type='number'
               placeholder='验证码'
             />
-            <SmsSendBtn phone={phone} />
+            <SmsSendBtn phone={phone} way='login' />
           </div>
           <Button
             onClick={this.submit}

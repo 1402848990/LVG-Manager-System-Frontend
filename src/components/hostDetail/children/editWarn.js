@@ -2,20 +2,9 @@
  * @description 主机预警设置modal
  */
 import React, { useState } from 'react';
-import {
-  Form,
-  Input,
-  InputNumber,
-  Button,
-  Modal,
-  Select,
-  Slider,
-  Spin,
-  message
-} from 'antd';
+import { Form, Button, Modal, Select, Slider, Spin, message } from 'antd';
 import axios from '@/request/axiosConfig';
-import api from '@/request/api/api_host';
-import api_logs from '@/request/api/api_logs';
+import api_warn from '@/request/api/api_warn';
 
 const { Option } = Select;
 
@@ -23,48 +12,6 @@ const layout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 16 }
 };
-
-// 配置From rules
-const validateMessages = {
-  required: '这是必填项！',
-  types: {
-    email: 'is not validate email!',
-    number: '必须是数字！'
-  },
-  number: {
-    range: ' must be between ${min} and ${max}'
-  }
-};
-
-// 操作系统类型
-const sysType = [
-  'Windows Server 2008 R2',
-  'Windows Server 2012 R2',
-  'Windows Server 2016 R2',
-  'CentOS',
-  'Ubuntu'
-];
-const opt = sysType.map(item => (
-  <Option key={item} value={item}>
-    {item}
-  </Option>
-));
-
-// 内存大小
-const ramSize = [1, 2, 4, 8, 16, 32];
-const optRAM = ramSize.map(item => (
-  <Option key={item} value={item}>
-    {item}G
-  </Option>
-));
-
-// 处理器核心数
-const core = [1, 2, 4, 8];
-const optCore = core.map(item => (
-  <Option key={item} value={item}>
-    {item}核
-  </Option>
-));
 
 export default function createHostModal(props) {
   // state
@@ -74,50 +21,43 @@ export default function createHostModal(props) {
 
   const [form] = Form.useForm();
 
-  const valuesChange = async value => {
-    console.log('value', value);
-    const newValue = Object.assign(changeValue, value);
-    await setChangeValue(newValue);
-    console.log('changeValue', changeValue);
-  };
-
-  // 确认修改主机按钮
+  // 确认启动预警
   const onFinish = async values => {
     await setLoading(true);
+    const { cpuUsed, ramUsed, netWidthUsed, cDiskUsed } = values;
     console.log(values);
 
-    // 取出uid
-    // const { id: uid } = JSON.parse(localStorage.getItem('userInfo'));
-    // values.uid = uid;
-    // values.system.includes('Windows') ? (values.dDisk = undefined) : null;
-
     const data = {
-      hostInfo: { ...changeValue },
-      id: props.hid
+      setting: { ...values },
+      hid: props.hid
     };
     console.log('data', data);
 
-    // 修改主机接口
+    // 预警设置接口
     const res = await axios({
-      url: api.editHost,
+      url: api_warn.warnSetting,
       method: 'post',
       data
     });
 
-    // if (res.data.success) {
-    //   // 操作日志写入
-    //   const { id: uid } = JSON.parse(localStorage.getItem('userInfo'));
-    //   props.saveOperation(uid, '创建', JSON.stringify([res.data.id]));
-    // }
-    // console.log('res', res);
+    if (res.data.success) {
+      // 操作日志写入
+      const { id: uid } = JSON.parse(localStorage.getItem('userInfo'));
+      props.saveOperation(
+        uid,
+        '预警设置',
+        JSON.stringify([res.data.hid]),
+        `触发条件--CPU使用率:${cpuUsed}%,RAM使用率${ramUsed}%,带宽使用率:${netWidthUsed}%,C盘使用率:${cDiskUsed}%`
+      );
+    }
 
     setTimeout(() => {
       setLoading(false);
     }, 500);
 
     // 关闭Modal并弹出message
-    props.closeModal();
-    message.success(`主机：${values.hostName}，配置修改成功！`);
+    props.closeWarnModal();
+    message.success(`主机：${props.hid}，预警启动成功！`);
     // props.getAllHost(); // 刷新数据
   };
 
@@ -126,7 +66,7 @@ export default function createHostModal(props) {
       title='主机预警设置'
       onCancel={props.closeWarnModal}
       cancelText='取消'
-      visible={props.warnModalVisible}
+      visible={props.warnVisible}
       footer={null}
     >
       <Spin size='large' tip='预警设置生效中...' spinning={loading}>
@@ -135,8 +75,6 @@ export default function createHostModal(props) {
           {...layout}
           name='nest-messages'
           onFinish={onFinish}
-          onValuesChange={valuesChange}
-          validateMessages={validateMessages}
           initialValues={{
             ramUsed: 90,
             cpuUsed: 90,

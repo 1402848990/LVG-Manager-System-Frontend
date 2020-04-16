@@ -3,12 +3,11 @@ import styles from '../index.scss';
 import { List, message, Avatar, Spin, Divider } from 'antd';
 import IconFont from '@/assets/icon';
 import reqwest from 'reqwest';
+import axios from '@/request/axiosConfig';
+import api_logs from '@/request/api/api_logs';
 import './warnLog.css';
-
 import InfiniteScroll from 'react-infinite-scroller';
-
-const fakeDataUrl =
-  'https://randomuser.me/api/?results=5&inc=name,gender,email,nat&noinfo';
+import moment from 'moment';
 
 export default class WarnLog extends React.Component {
   state = {
@@ -18,12 +17,33 @@ export default class WarnLog extends React.Component {
   };
 
   componentDidMount() {
-    this.fetchData(res => {
-      this.setState({
-        data: res.results
-      });
-    });
+    this.getWarnLog();
+    // this.fetchData(res => {
+    //   this.setState({
+    //     data: res.results
+    //   });
+    // });
   }
+
+  // 获取预警日志
+  getWarnLog = async () => {
+    const { userInfo } = localStorage;
+    const { id: uid } = userInfo ? JSON.parse(userInfo) : {};
+    const res = await axios({
+      url: api_logs.getWarnLogs,
+      method: 'post',
+      data: {
+        hid: this.props.hid
+      }
+    });
+    // 用户登录日志存到state中
+    await this.setState({
+      warnLog: res.data.data
+    });
+    console.log(this.state);
+
+    // const { ip, address, createdAt, total } = res.data.data;
+  };
 
   fetchData = callback => {
     reqwest({
@@ -37,31 +57,20 @@ export default class WarnLog extends React.Component {
     });
   };
 
-  handleInfiniteOnLoad = () => {
+  handleInfiniteOnLoad = async () => {
     let { data } = this.state;
     this.setState({
       loading: true
     });
-    if (data.length > 14) {
-      message.warning('Infinite List loaded all');
-      this.setState({
-        hasMore: false,
-        loading: false
-      });
-      return;
-    }
-    this.fetchData(res => {
-      data = data.concat(res.results);
-      this.setState({
-        data,
-        loading: false
-      });
+    await this.getWarnLog();
+    this.setState({
+      loading: false
     });
   };
 
   render() {
     return (
-      <div className='demo-infinite-container' style={{ height: '259px' }}>
+      <div className='demo-infinite-container' style={{ height: '321px' }}>
         <Divider orientation='left'>预警日志</Divider>
         <InfiniteScroll
           initialLoad={false}
@@ -71,7 +80,7 @@ export default class WarnLog extends React.Component {
           useWindow={false}
         >
           <List
-            dataSource={this.state.data}
+            dataSource={this.state.warnLog}
             renderItem={item => (
               <List.Item key={item.id}>
                 <List.Item.Meta
@@ -81,10 +90,20 @@ export default class WarnLog extends React.Component {
                       icon={<IconFont type='iconwarn' />}
                     />
                   }
-                  title={<a href='https://ant.design'>CPU使用率预警</a>}
-                  description='触发值为：90%'
+                  title={
+                    <a href='#'>
+                      [{item.hid}]{item.type}
+                    </a>
+                  }
+                  description={`设置预警条件为:${
+                    item.settingValue
+                  }%；触发值为：${item.warnValue}${
+                    item.type === '网络占用率预警' ? 'KB/S' : '%'
+                  }`}
                 />
-                <div>2020-04-10 16:20:13</div>
+                <div>
+                  {moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}
+                </div>
               </List.Item>
             )}
           >

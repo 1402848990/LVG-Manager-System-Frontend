@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Avatar, Dropdown, Menu, Badge } from 'antd';
+import Websocket from 'react-websocket';
 import {
   UserOutlined,
   LogoutOutlined,
@@ -27,7 +28,7 @@ import BasicDrawer from '@/components/BasicDrawer';
 import styles from './index.scss';
 
 class TopHeader extends Component {
-  state = { visible: false };
+  state = { visible: false, num: '' };
   handleLogout = () => {
     this.props.setUserInfo({});
     this.props.emptyTag();
@@ -47,8 +48,8 @@ class TopHeader extends Component {
     }
   }
   toNews = () => {
-    this.handClickTag('/news');
-    this.props.history.push('/news');
+    this.handClickTag('/bell');
+    this.props.history.push('/bell');
   };
   handClickTag(path, parent) {
     for (let i = 0; i < routes.length; i++) {
@@ -87,7 +88,18 @@ class TopHeader extends Component {
     );
     this.onClose();
   };
+  // 处理bellws
+  handleBellNum = num => {
+    if (!num.includes('连接成功')) {
+      this.setState({
+        num
+      });
+    }
+  };
   render() {
+    const { id: uid } =
+      localStorage.getItem('userInfo') &&
+      JSON.parse(localStorage.getItem('userInfo'));
     const DropdownList = (
       <Menu className='drop-list'>
         <Menu.Item
@@ -113,6 +125,19 @@ class TopHeader extends Component {
     const { tags } = this.props;
     return (
       <div className='top-header'>
+        <Websocket
+          url='ws://localhost:8088/bellWs'
+          onMessage={() => {}}
+          reconnectIntervalInMilliSeconds={10000}
+          sendMessage='111'
+        />
+        {/* 未读消息条目 */}
+        <Websocket
+          url={`ws://localhost:8088/bellNumWs/uid=${uid}`}
+          onMessage={this.handleBellNum}
+          reconnectIntervalInMilliSeconds={10000}
+          sendMessage='111'
+        />
         <div className='top-header-inner'>
           <MenuUnfoldOutlined className='trigger' onClick={this.toggle} />
 
@@ -134,7 +159,7 @@ class TopHeader extends Component {
               />
             </div>
             <div className='news-wrap'>
-              <Badge>
+              <Badge count={this.state.num}>
                 <BellOutlined
                   style={{ fontSize: '20px', cursor: 'pointer' }}
                   onClick={this.toNews}

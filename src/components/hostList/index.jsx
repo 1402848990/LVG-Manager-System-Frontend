@@ -168,7 +168,7 @@ class IndexPage extends React.Component {
           ref={node => {
             this.searchInput = node;
           }}
-          placeholder={`Search ${dataIndex}`}
+          placeholder={`${dataIndex === 'hostName' ? '主机' : '系统'}搜索`}
           value={selectedKeys[0]}
           onChange={e =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -185,14 +185,14 @@ class IndexPage extends React.Component {
           size='small'
           style={{ width: 90, marginRight: 8 }}
         >
-          Search
+          确定
         </Button>
         <Button
           onClick={() => this.handleReset(clearFilters)}
           size='small'
           style={{ width: 90 }}
         >
-          Reset
+          重置
         </Button>
       </div>
     ),
@@ -323,10 +323,14 @@ class IndexPage extends React.Component {
           {
             text: '关机',
             value: 0
+          },
+          {
+            text: '告警',
+            value: -1
           }
         ],
         onFilter: (value, record) => {
-          return record.hostState === value;
+          return record.state === value;
         },
         render: text =>
           text === 1 ? (

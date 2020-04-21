@@ -58,6 +58,8 @@ class HostList extends React.Component {
   };
 
   render() {
+    // console.log(this.props.allHost);
+
     const { cpuData, netData } = this.state;
     let cpu = 0;
     let gpu = 0;
@@ -68,7 +70,7 @@ class HostList extends React.Component {
     return (
       <div className={styles.hostList}>
         <Websocket
-          url='ws://localhost:8088/CpuWs'
+          url='ws://localhost:8088/CpuWsNowByHid/hid='
           onMessage={this.handleCpuData}
           reconnectIntervalInMilliSeconds={10000}
           sendMessage='cpu'
@@ -94,53 +96,55 @@ class HostList extends React.Component {
           grid={{ gutter: 2, column: 2 }}
           renderItem={item => {
             // C盘占用率\带宽
-            const { cDiskUsed = 0.2, netWidth } = item;
+            const { cDiskUsed = 0.2, netWidth, state, id } = item;
+            let healthy = 0;
+            if (state !== 0) {
+              if (this.state.cpuData.length > 0) {
+                this.state.cpuData.map(data => {
+                  if (item.id === data.hid) {
+                    cpu = data.used;
+                    ram = data.ramUsed;
+                    gpu = data.gpuUsed;
+                  }
+                });
+              }
+              if (netData.length > 0) {
+                netData.map(data => {
+                  if (item.id === data.hid) {
+                    up = data.up;
+                    down = data.down;
+                  }
+                });
+              }
 
-            if (this.state.cpuData.length > 0) {
-              this.state.cpuData.map(data => {
-                if (item.id === data.hid) {
-                  cpu = data.used;
-                  ram = data.ramUsed;
-                  gpu = data.gpuUsed;
-                }
-              });
+              // console.log(
+              //   'cpu:',
+              //   cpu,
+              //   'ram:',
+              //   ram,
+              //   'up:',
+              //   up,
+              //   'netWidth:',
+              //   netWidth,
+              //   'cDiskUsed:',
+              //   cDiskUsed,
+              //   'gpu:',
+              //   gpu
+              // );
+
+              // 带宽占用率
+              const netUsed = up / (netWidth * 1024) / 8;
+              healthy = (
+                100 -
+                Math.floor(
+                  ram * 0.4 +
+                    cpu * 0.26 +
+                    netUsed * 0.15 +
+                    cDiskUsed * 0.15 +
+                    gpu * 0.04
+                )
+              ).toString(); // 为了避免NAN时报错，所以转成string
             }
-            if (netData.length > 0) {
-              netData.map(data => {
-                if (item.id === data.hid) {
-                  up = data.up;
-                  down = data.down;
-                }
-              });
-            }
-
-            // console.log(
-            //   'cpu:',
-            //   cpu,
-            //   'ram:',
-            //   ram,
-            //   'up:',
-            //   up,
-            //   'netWidth:',
-            //   netWidth,
-            //   'cDiskUsed:',
-            //   cDiskUsed,
-            //   'gpu:',
-            //   gpu
-            // );
-
-            // 带宽占用率
-            const netUsed = up / (netWidth * 1024) / 8;
-            const healthy = (
-              100 -
-              Math.floor(
-                ram * 0.4 +
-                  cpu * 0.26 +
-                  netUsed * 0.15 +
-                  cDiskUsed * 0.15 +
-                  gpu * 0.04
-              )
-            ).toString(); // 为了避免NAN时报错，所以转成string
 
             return (
               <List.Item
@@ -179,7 +183,7 @@ class HostList extends React.Component {
                     <div>
                       CPU：
                       <Progress
-                        percent={cpu}
+                        percent={state === 0 ? 0 : cpu}
                         strokeColor={
                           cpu > 50
                             ? cpu > 70
@@ -201,7 +205,7 @@ class HostList extends React.Component {
                               : warnColor
                             : safeColor
                         }
-                        percent={ram}
+                        percent={state === 0 ? 0 : ram}
                         status='active'
                         className={styles.progress}
                       />
@@ -216,7 +220,7 @@ class HostList extends React.Component {
                             marginRight: '-3px'
                           }}
                         />
-                        {up}KB
+                        {state === 0 ? 0 : up}KB
                       </span>
                       <IconFont
                         styles={{
@@ -224,13 +228,19 @@ class HostList extends React.Component {
                         }}
                         type='icondown'
                       />
-                      {down}KB
+                      {state === 0 ? 0 : down}KB
                     </div>
                   </Col>
                   {/* 右侧 健康值 */}
                   <Col span={5} className={styles.right}>
                     <span>健康值</span>
-                    <span>{healthy}</span>
+                    <span>
+                      {item.state === 0 ? (
+                        <font color='red'>关机</font>
+                      ) : (
+                        healthy
+                      )}
+                    </span>
                   </Col>
                 </Row>
                 {/* <Card title={item.title}>Card content</Card> */}

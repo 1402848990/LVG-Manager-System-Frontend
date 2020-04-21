@@ -5,7 +5,8 @@ let baseUrl = null;
 console.log(process.env.NODE_ENV);
 switch (process.env.NODE_ENV) {
   case 'production':
-    baseUrl = '../../../../';
+    console.log('生产环境');
+    baseUrl = '../../../LVG-Manager-System/api';
     break;
   default:
     baseUrl = 'http://localhost:8088/api';

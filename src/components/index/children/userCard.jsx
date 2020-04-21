@@ -79,7 +79,7 @@ class UserCard extends React.Component {
                 Hi,{this.state.userName}~
               </a>
             </h2>
-            <h3>初次见面，请多关照~</h3>
+            <h3>阳光正好，微风不燥~</h3>
           </div>
           <div
             style={{

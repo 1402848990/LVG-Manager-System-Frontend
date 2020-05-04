@@ -126,14 +126,18 @@ class TopHeader extends Component {
     return (
       <div className='top-header'>
         <Websocket
-          url='ws://localhost:8088/bellWs'
+          url={`ws://${
+            process.env.NODE_ENV === 'production' ? 'wrdemo.cn' : 'localhost'
+          }:8088/bellWs`}
           onMessage={() => {}}
           reconnectIntervalInMilliSeconds={10000}
           sendMessage='111'
         />
         {/* 未读消息条目 */}
         <Websocket
-          url={`ws://localhost:8088/bellNumWs/uid=${uid}`}
+          url={`ws://${
+            process.env.NODE_ENV === 'production' ? 'wrdemo.cn' : 'localhost'
+          }:8088/bellNumWs/uid=${uid}`}
           onMessage={this.handleBellNum}
           reconnectIntervalInMilliSeconds={10000}
           sendMessage='111'

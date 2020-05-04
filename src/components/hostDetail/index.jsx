@@ -54,7 +54,9 @@ class IndexPage extends React.Component {
 
   render() {
     const { hid, hostDetail, cpuData } = this.state;
-    const urlCpu = `ws://localhost:8088/CpuWsOne/hid=${hid}`;
+    const urlCpu = `ws://${
+      process.env.NODE_ENV === 'production' ? 'wrdemo.cn' : 'localhost'
+    }:8088/CpuWsOne/hid=${hid}`;
     return (
       <div className={styles.hostDetail}>
         <Websocket

@@ -16,6 +16,7 @@ import axios from '@/request/axiosConfig';
 import api_host from '@/request/api/api_host';
 import styles from './index.scss';
 import { withRouter } from 'react-router-dom';
+// import css from './screen.css';
 // import './screen.css';
 
 import moment from 'moment';
@@ -135,10 +136,10 @@ class BigScreen extends React.Component {
           ],
           unit: '%'
         }
-      },
-      () => {
-        console.log(this.state);
       }
+      // () => {
+      //   console.log(this.state);
+      // }
     );
   };
 
@@ -159,9 +160,11 @@ class BigScreen extends React.Component {
       state,
       cDisk
     } = this.state.hostDetail;
-    const urlCpu = `ws://localhost:8088/cpuScreen/hid=${hid}`;
+    const urlCpu = `ws://${
+      process.env.NODE_ENV === 'production' ? 'wrdemo.cn' : 'localhost'
+    }:8088/cpuScreen/hid=${hid}`;
     return (
-      <div className='fullscreen'>
+      <div className={styles.fullScreen}>
         <Websocket
           url={urlCpu}
           onMessage={this.handleCpuData}
@@ -169,7 +172,7 @@ class BigScreen extends React.Component {
           sendMessage='cpu'
         />{' '}
         <div className='header'>
-          <h1 className='header-title'>大屏可视化监控</h1>
+          <h1 className='header-titles'>大屏可视化监控</h1>
         </div>
         <div className='wrapper'>
           <div className='content'>

@@ -73,7 +73,9 @@ export default class NetSpeed extends React.Component {
 
   render() {
     const getData = this.state.data;
-    const urlNet = `ws://localhost:8088/NetWsOne/hid=${this.props.hid}`;
+    const urlNet = `ws://${
+      process.env.NODE_ENV === 'production' ? 'wrdemo.cn' : 'localhost'
+    }:8088/NetWsOne/hid=${this.props.hid}`;
     return (
       <div className={styles.netSpeed}>
         <Websocket

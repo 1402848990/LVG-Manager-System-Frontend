@@ -54,15 +54,15 @@ class UserName extends React.Component {
     }
 
     // 发送登录请求
-    const { cip, cname } = await getIPandAddress();
+    // const { cip, cname } = await getIPandAddress();
     const res = await axios({
       url: api.login,
       method: 'post',
       data: {
         userName,
-        passWord,
-        ip: cip,
-        address: cname
+        passWord
+        // ip: cip,
+        // address: cname
       }
     });
     // console.log('res', res);

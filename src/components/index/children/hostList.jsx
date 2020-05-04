@@ -59,7 +59,7 @@ class HostList extends React.Component {
 
   render() {
     // console.log(this.props.allHost);
-
+    const { id: uid } = JSON.parse(localStorage.getItem('userInfo'));
     const { cpuData, netData } = this.state;
     let cpu = 0;
     let gpu = 0;
@@ -70,7 +70,9 @@ class HostList extends React.Component {
     return (
       <div className={styles.hostList}>
         <Websocket
-          url='ws://localhost:8088/CpuWsNowByHid/hid='
+          url={`ws://${
+            process.env.NODE_ENV === 'production' ? 'wrdemo.cn' : 'localhost'
+          }:8088/CpuWsNowByUid/uid=${uid}`}
           onMessage={this.handleCpuData}
           reconnectIntervalInMilliSeconds={10000}
           sendMessage='cpu'
@@ -80,7 +82,9 @@ class HostList extends React.Component {
           }}
         />
         <Websocket
-          url='ws://localhost:8088/NetWs'
+          url={`ws://${
+            process.env.NODE_ENV === 'production' ? 'wrdemo.cn' : 'localhost'
+          }:8088/NetWs`}
           onMessage={this.handleNetData}
           reconnectIntervalInMilliSeconds={10000}
           sendMessage='net'

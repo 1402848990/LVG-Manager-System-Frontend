@@ -4,6 +4,7 @@ const api = {
   userInfo: 'User/userInfo', // 获取用户信息
   loginLog: 'User/loginLog', //用户登录日志
   editUserInfo: 'User/editUserInfo', // 修改用户信息
-  changePassWord: 'User/changePassWord' // 修改密码
+  changePassWord: 'User/changePassWord', // 修改密码
+  getGps: 'cityjson?ie=json'
 };
 export default api;

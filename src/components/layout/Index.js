@@ -13,7 +13,7 @@ class Index extends Component {
   // }
 
   render() {
-    console.log('layout-store', store.getState());
+    // console.log('layout-store', store.getState());
 
     const { breadCrumb } = this.props;
     return (

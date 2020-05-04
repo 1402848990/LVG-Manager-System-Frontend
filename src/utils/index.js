@@ -21,6 +21,8 @@ function countNum(arr) {
 async function getIPandAddress() {
   const res = await axios({
     url: '/cityjson?ie=json',
+    // url: 'http://wrdemo.cn/gps/',
+    // url: 'http://api.ip138.com/query/',
     method: 'get'
   });
   const d = res.data.split('= ');

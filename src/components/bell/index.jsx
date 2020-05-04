@@ -88,7 +88,9 @@ export default class Bell extends Component {
       <div className='shadow-radius'>
         {/* 所有消息详情WS */}
         <Websocket
-          url={`ws://localhost:8088/getLogsDetail/uid=${uid}`}
+          url={`ws://${
+            process.env.NODE_ENV === 'production' ? 'wrdemo.cn' : 'localhost'
+          }:8088/getLogsDetail/uid=${uid}`}
           onMessage={this.handleLogsDetail}
           reconnectIntervalInMilliSeconds={10000}
           sendMessage='111'

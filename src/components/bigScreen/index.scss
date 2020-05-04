@@ -1,48 +1,58 @@
-.net {
-  top: 25px;
-  position: relative;
-  font-size: 20px;
-  span {
-    display: inline-block;
-    width: 25%;
-    text-align: center;
-  }
-  .title {
-    color: #d9d9ea;
-  }
-  .value {
-    color: #7fff00;
-  }
-}
-.netSpeed {
-  position: relative;
-  top: 10%;
-}
-.config {
-  padding-top: 5%;
-  color: whitesmoke;
-  font-size: 18px;
-  text-align: center;
-  line-height: 30px;
-  .name {
+.fullScreen {
+  width: 100%;
+  height: 100%;
+  max-width: 1920px;
+  min-width: 1279px;
+  font-family: 'microsoft yahei', arial, sans-serif;
+  background-color: #0b0f34;
+  overflow: scroll;
+  margin: 0;
+  .net {
+    top: 25px;
+    position: relative;
+    font-size: 20px;
     span {
-      padding-right: 30px;
+      display: inline-block;
+      width: 25%;
+      text-align: center;
+    }
+    .title {
+      color: #d9d9ea;
+    }
+    .value {
+      color: #7fff00;
     }
   }
-  .value {
+  .netSpeed {
+    position: relative;
+    top: 10%;
   }
-}
-.time {
-  padding-top: 15px;
-  p {
-    font-size: 16px;
+  .config {
+    padding-top: 5%;
+    color: whitesmoke;
+    font-size: 18px;
+    text-align: center;
+    line-height: 30px;
+    .name {
+      span {
+        padding-right: 30px;
+      }
+    }
+    .value {
+    }
+  }
+  .time {
+    padding-top: 15px;
+    p {
+      font-size: 16px;
 
-    padding-left: 5%;
-    color: #4ef5e6 !important;
-    /* padding-bottom: 0; */
-    margin-bottom: 5px;
+      padding-left: 5%;
+      color: #4ef5e6 !important;
+      /* padding-bottom: 0; */
+      margin-bottom: 5px;
+    }
   }
-}
-.cpu {
-  height: 40%;
+  .cpu {
+    height: 40%;
+  }
 }

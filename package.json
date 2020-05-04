@@ -171,5 +171,5 @@
     "eslint-plugin-react-hooks": "^2.5.1"
   },
   "proxy": "http://pv.sohu.com/",
-  "homepage": "."
+  "homepage": "./"
 }

@@ -43,14 +43,14 @@ class Phone extends React.Component {
     }
 
     // 登录请求
-    const { cip, cname } = await getIPandAddress();
+    // const { cip, cname } = await getIPandAddress();
     const res = await axios({
       url: api.login,
       method: 'post',
       data: {
-        phone,
-        ip: cip,
-        address: cname
+        phone
+        // ip: cip,
+        // address: cname
       }
     });
     console.log('res', res);

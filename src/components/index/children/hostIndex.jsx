@@ -78,11 +78,9 @@ class HostIndex extends React.Component {
 
   handleCpuData = async data => {
     // 基础数据存入state中
-    await this.setState(
-      {
-        cpuData: (data && !data.includes('连接成功') && JSON.parse(data)) || {}
-      }
-    );
+    await this.setState({
+      cpuData: (data && !data.includes('连接成功') && JSON.parse(data)) || {}
+    });
   };
 
   handleNetData = async data => {
@@ -164,17 +162,22 @@ class HostIndex extends React.Component {
   };
 
   render() {
+    const { id: uid } = JSON.parse(localStorage.getItem('userInfo'));
     return (
       <div className={styles.hostIndex}>
         <Websocket
-          url='ws://localhost:8088/CpuWs'
+          url={`ws://${
+            process.env.NODE_ENV === 'production' ? 'wrdemo.cn' : 'localhost'
+          }:8088/CpuWsNowByUid/uid=${uid}`}
           onMessage={this.handleCpuData}
           reconnectIntervalInMilliSeconds={10000}
           sendMessage='111'
           ref={this.ws}
         />
         <Websocket
-          url='ws://localhost:8088/NetWs'
+          url={`ws://${
+            process.env.NODE_ENV === 'production' ? 'wrdemo.cn' : 'localhost'
+          }:8088/NetWs`}
           onMessage={this.handleNetData}
           reconnectIntervalInMilliSeconds={10000}
           sendMessage='net'

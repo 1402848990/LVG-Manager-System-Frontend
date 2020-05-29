@@ -66,6 +66,23 @@ export default class Bell extends Component {
   };
 
   /**
+   * 阅读全部消息
+   */
+  handleReadAll = async type => {
+    const { id: uid } =
+      localStorage.getItem('userInfo') &&
+      JSON.parse(localStorage.getItem('userInfo'));
+    const res = await axios({
+      url: api_bell.readBellAll,
+      method: 'post',
+      data: {
+        uid,
+        type
+      }
+    });
+  };
+
+  /**
    * 删除消息
    */
   handleDelete = async (id, type) => {
@@ -108,7 +125,12 @@ export default class Bell extends Component {
               className='list-news'
               footer={
                 <div>
-                  <Button type='primary'>全部标为已读</Button>
+                  <Button
+                    onClick={this.handleReadAll.bind(this, 'warn')}
+                    type='primary'
+                  >
+                    全部标为已读
+                  </Button>
                 </div>
               }
               dataSource={this.state.warnData}
@@ -153,11 +175,11 @@ export default class Bell extends Component {
               }}
               loading={loading}
               className='list-news'
-              footer={
-                <div>
-                  <Button type='danger'>删除全部</Button>
-                </div>
-              }
+              // footer={
+              //   <div>
+              //     <Button type='danger'>删除全部</Button>
+              //   </div>
+              // }
               dataSource={this.state.warnDataRead}
               renderItem={item => (
                 <List.Item key={item.id}>
@@ -203,7 +225,12 @@ export default class Bell extends Component {
               className='list-news'
               footer={
                 <div>
-                  <Button type='primary'>全部标为已读</Button>
+                  <Button
+                    onClick={this.handleReadAll.bind(this, 'opera')}
+                    type='primary'
+                  >
+                    全部标为已读
+                  </Button>
                 </div>
               }
               dataSource={this.state.operData}
@@ -239,11 +266,11 @@ export default class Bell extends Component {
               }}
               loading={loading}
               className='list-news'
-              footer={
-                <div>
-                  <Button type='danger'>删除全部</Button>
-                </div>
-              }
+              // footer={
+              //   <div>
+              //     <Button type='danger'>删除全部</Button>
+              //   </div>
+              // }
               dataSource={this.state.operDataRead}
               renderItem={item => (
                 <List.Item key={item.id}>

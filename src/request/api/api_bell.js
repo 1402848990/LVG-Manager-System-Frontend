@@ -1,5 +1,6 @@
 const api = {
-  deleteBell: 'Bell/deleteBell', // 创建主机
-  readBell: 'Bell/readBell' // 创建主机
+  deleteBell: 'Bell/deleteBell', // 删除消息
+  readBell: 'Bell/readBell', // 阅读消息
+  readBellAll: 'Bell/readBellAll' // 阅读全部消息
 };
 export default api;

@@ -82,7 +82,7 @@ class Phone extends React.Component {
         )
       );
       // 登录成功跳转首页
-      message.success(data.message).then(() => {
+      message.success(data.message, 1.5).then(() => {
         this.props.history.push('/index');
       });
     }

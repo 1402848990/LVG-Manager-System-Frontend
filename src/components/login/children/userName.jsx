@@ -95,7 +95,7 @@ class UserName extends React.Component {
       );
 
       // 登录成功跳转首页
-      message.success(`${data.message}正在跳转...`).then(() => {
+      message.success(`${data.message}正在跳转...`, 1.5).then(() => {
         this.props.history.push('/index');
       });
     }

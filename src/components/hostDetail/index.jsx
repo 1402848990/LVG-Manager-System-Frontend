@@ -68,7 +68,12 @@ class IndexPage extends React.Component {
         />
         {/* 顶部状态图表 */}
         <Status cpuData={cpuData} hid={hid} hostDetail={hostDetail} />
-        <HostDesc cpuData={cpuData} hid={hid} hostDetail={hostDetail} />
+        <HostDesc
+          cpuData={cpuData}
+          hid={hid}
+          getHostDetail={this.getHostDetail}
+          hostDetail={hostDetail}
+        />
         <Plot hostDetail={hostDetail} cpuData={cpuData} hid={hid} />
       </div>
       // </div>

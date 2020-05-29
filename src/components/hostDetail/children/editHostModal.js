@@ -118,7 +118,7 @@ export default function createHostModal(props) {
     // 关闭Modal并弹出message
     props.closeModal();
     message.success(`主机：${values.hostName}，配置修改成功！`);
-    // props.getAllHost(); // 刷新数据
+    props.getHostDetail(); // 刷新数据
   };
 
   return (

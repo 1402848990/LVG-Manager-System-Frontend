@@ -60,6 +60,8 @@ class HostDesc extends React.Component {
           res.data.data[0]
         }台主机--成功！`
       );
+      // 更新主机状态
+      this.props.getHostDetail();
       // await this.getAllHost();
     } else {
       // 执行失败
@@ -119,6 +121,7 @@ class HostDesc extends React.Component {
           visible={this.state.visible}
           closeModal={this.closeModal}
           hostDetail={this.props.hostDetail}
+          getHostDetail={this.props.getHostDetail}
         />
         {/* 预警设置Modal */}
         <EditWarn
@@ -154,12 +157,14 @@ class HostDesc extends React.Component {
                 onClick={this.openOrClose.bind(this, 'open')}
                 size='large'
                 icon={<PlayCircleOutlined />}
+                disabled={state === 1}
               ></Button>
               {/* 关机 */}
               <Button
                 onClick={this.openOrClose.bind(this, 'close')}
                 size='large'
                 icon={<PoweroffOutlined />}
+                disabled={state === 0}
               ></Button>
               {/* 预警设置 */}
               <Button
